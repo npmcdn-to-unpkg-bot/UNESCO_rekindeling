@@ -1,0 +1,92 @@
+html,body,h1,h2,h3,h4,p,div,ul,li,svg{
+    margin:0;
+    padding:0;
+    font-size:100%;
+}
+
+/*------------Structure-------------*/
+html,body{
+    height: 100%;
+    position: relative;
+    background:rgb(250,250,250);
+    font-family: 'Lato';
+}
+div{
+ 
+}
+
+.scene{
+    width: 80%; height: 90%; margin: auto;
+}
+
+.leftBar{
+    width:25% ; height: 100%; position: relative;
+}
+
+}
+.container{
+    width:100%;
+    height: 100%;
+
+    margin-left:auto;
+}
+.map{
+    position: fixed;
+    width:75%;
+    height: 800px;
+    top: 0;
+}
+.container .control{
+    height:40px;
+    margin:auto;
+}
+
+/*------------font-------------*/
+body{
+    font-size: 16px;
+}
+h1{ font-size:2em;
+    font-style: black}
+h2{ 
+    font-size:1.3em;
+    
+}
+p{
+    font-family:'Lato';
+    font-weight: 200 ;
+    font-size: 15pt;
+/*    margin-left: 30%;
+    margin-top: 5%;  */
+}
+
+/*------------tooltip-------------*/
+
+.tooltip{
+    
+    margin:15px 35%;
+
+}
+
+
+/*------------svg-----------------*/
+.canvas .node{
+    fill: red;
+    stroke: #fff;
+    stroke-width:1.5px;
+}
+
+.canvas .link{
+    fill:none;
+    stroke:white;
+    stroke-width:1px;
+    opacity:.03;
+}
+
+.path {
+        stroke: white;
+        stroke-weight: 2px;
+        fill: white;
+      }
+
+
+
