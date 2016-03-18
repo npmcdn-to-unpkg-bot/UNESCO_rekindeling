@@ -113,22 +113,31 @@ function NestData(worldMap, DataSite_){
             categoryByCountry.set(eachCountry.key, totalCatgory);    
             }
 
-      newDataSite = DataSite
-          .sort(function(a, b){
-          return d3.descending(a.total, b.total)})
+
+          
 
 
-var countryli = d3.select(".country-list");
-  countryli.selectAll('li')
-  .data(newDataSite)
-  .enter()
-  .append('li')
-  .text(function(d){ return d.key})
       console.log(newDataSite);
       drawRect(center);
 
 
   })
+
+var newDataSite = DataSite
+    .sort(function(a, b){
+    return d3.descending(a.total, b.total)})
+
+
+var countryli = d3.select(".country-list");
+  countryli.selectAll('li')
+  .data(newDataSite)
+
+  .enter()
+  .append('li')
+  .text(function(d){ return d.key })
+
+
+      
 } //drawMap
 
 
