@@ -22,6 +22,9 @@ div{
 .leftBar{
     width:25% ; height: 100%; position: relative; z-index:1000;
 }
+.site-list{
+    width:25% ; height: 100%; position: relative; z-index:1000;
+}
 
 }
 .container{

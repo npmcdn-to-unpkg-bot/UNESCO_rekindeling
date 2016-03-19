@@ -113,7 +113,7 @@ var newDataSite = DataSite
     return d3.descending(a.total, b.total)})
 
 d3.selectAll('.country-list').call(appendCountryList)
-
+console.log(newDataSite);
 
 
   function appendCountryList(selection){
@@ -124,18 +124,21 @@ d3.selectAll('.country-list').call(appendCountryList)
       .enter()
       .append('li').attr('class', 'lst')
       .text(function(d){ return [d.total + '  ' + d.key] })
-
-//countryli.each(function(d, i){
-  //var child = d3.select(this.childNodes)
- 
       .on('mouseover',function(d,i){
           dispatch.countryHover(i);
            console.log(i)
       })
       .on('mouseleave',function(d,i){
         dispatch.countryLeave(i);
-      })
-//})
+      });
+
+    var siteli = d3.select('.site-list').append('ul');
+      siteli.selectAll('li')
+      .data(newDataSite)
+      .enter()
+      .append('li').attr('class', 'sitelst')
+      .text(function(d){ return entries })
+      .style('opacity', 0);
 
 
     //---------- this is the listener function ------------------//
@@ -144,9 +147,17 @@ d3.selectAll('.country-list').call(appendCountryList)
       console.log(countryli)
       selected = countryli.selectAll('.lst').filter(function(d,i) { 
         return i == index; 
-      });
+      })
+      selectedname = siteli.selectAll('.sitelst').filter(function(d,i){
+        return i==index;
+      })
+
       selected.style('color','red');
+      selectedname.style('opacity', 1);
     });
+
+
+
     dispatch.on('countryLeave', function(index){
       selected = countryli.selectAll('.lst').filter(function(d,i) { 
         return i == index; 
