@@ -20,7 +20,7 @@ div{
 }
 
 .leftBar{
-    width:25% ; height: 100%; position: relative;
+    width:25% ; height: 100%; position: relative; z-index:1000;
 }
 
 }
@@ -59,10 +59,14 @@ p{
     margin-top: 5%;  */
 }
 
+li{
+    list-style: none;
+}
+
 /*------------tooltip-------------*/
 
 .tooltip{
-    
+    z-index:100;
     margin:15px 35%;
 
 }

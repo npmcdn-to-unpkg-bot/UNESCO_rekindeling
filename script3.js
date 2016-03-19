@@ -36,7 +36,7 @@ queue()
       .defer(d3.csv, "data/unescoData.csv", parseUnesco)
       .await(DataLoaded)
 
-var globalDispatcher = d3.dispatch('countrychange');
+var dispatch = d3.dispatch('countryHover', 'countryLeave');
 
 function parseUnesco(d){ 
     return { 
@@ -112,12 +112,6 @@ function NestData(worldMap, DataSite_){
             if (categoryByCountry.has(eachCountry.key) == false ){
             categoryByCountry.set(eachCountry.key, totalCatgory);    
             }
-
-
-          
-
-
-      console.log(newDataSite);
       drawRect(center);
 
 
@@ -131,13 +125,36 @@ var newDataSite = DataSite
 var countryli = d3.select(".country-list");
   countryli.selectAll('li')
   .data(newDataSite)
-
   .enter()
   .append('li')
-  .text(function(d){ return d.key })
+  .text(function(d){ return [d.total + '  ' + d.key] })
+  .on('mouseover',function(d,i){
+    console.log(this);
+     dispatch.countryHover(i);
+  })
+  .on('mouseleave',function(d,i){
+    dispatch.countryLeave(i);
+  })
 
+dispatch.on('countryHover.'+countryli.attr('id'), function(index){
+  countryli.filter(function(d,i){
+          return i == index;
 
+      })
+      .style('color','red');
       
+
+});
+dispatch.on('countryLeave', function(index){
+  countryli.filter(function(d,i){
+      return i == index;
+  })
+      .style('color',null);
+
+})
+
+
+
 } //drawMap
 
 
@@ -168,13 +185,30 @@ function drawRect(center){
               })
             .style('fill-opacity',.3)
             .on("mousemove", function(d){
+
+//make broadcast function using index? to match d.key of list
+
              var values = siteByCountry.get(d.country);
-                    var tooltip = d3.select(".tooltip")
-                        .style("visibility","visible")
+             var tooltip = d3.select(".tooltip")
+                .style("visibility","visible")
                     tooltip
                         .select('h2')
-                        .html(d.country + "<br> " + values)     
+                        .html(d.country + "<br> " + values)  
+   
+
+
+
+
+
         });
+
+
+
+
+
+
+
+
 //---------------------------------------------------------------------------------------
         force.stop();
         force.nodes([])

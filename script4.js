@@ -24,27 +24,54 @@ var path = d3.geo.path()
             .gravity(0);
 
 var scaleR = d3.scale.sqrt().range([0,50]).domain([0,47]);
-    
+var parseDate = d3.time.format("%Y").parse;    
 var values;
 var siteByCountry = d3.map();
 var centroidByCountry = d3.map();
 var categoryByCountry = d3.map();
-
+var newDataSite;
 //------------------------------------------------------------------------load data     
 queue()
       .defer(d3.json, "data/countries.geo.json")
-      .defer(d3.csv, "data/unescoData.csv", parseData)
-      .await(function(err, worldMap, DataSite_){
-        
-     filterData(worldMap,DataSite_)  
+      .defer(d3.csv, "data/unescoData.csv", parseUnesco)
+      .await(DataLoaded)
 
-function filterData(worldMap, Data){
+var dispatch = d3.dispatch('countryHover', 'countryLeave');
 
-    var DataSite=d3.nest()
-       .key(function(d) {return d.state;})
+function parseUnesco(d){ 
+    return { 
+      'name':(d["site_name_en"] == " " ? undefined: d["site_name_en"]),
+      'category': (d["category"] == " " ? undefined: d["category"]),
+      'country': (d["states_name_en"] == " " ? undefined: d["states_name_en"]),
+      'region': d.name_en,
+      'date': d.date_inscribed,
+  };
+}
+
+function DataLoaded(err, worldMap_, DataSite_){
+          DataSite_.forEach(function(d) {
+            var newDate = parseDate(d.date);
+            d.newDate = newDate;
+        });
+
+
+     NestData(worldMap_,DataSite_)  
+}     
+var DataSite;
+function NestData(worldMap, DataSite_){
+
+    // d3.select('.country-list').on('change',function(){
+    //     globalDispatcher.countrychange(this.value);
+    // });
+
+
+    DataSite=d3.nest()
+       .key(function(d) {return d.country;})
        .key(function(d) {return d.category;})
        .sortKeys(d3.ascending)
-       .entries(Data)
+       .entries(DataSite_)
+
+    console.log(DataSite);
     var center = []
     center = worldMap.features.map(function(d){
 
@@ -54,7 +81,7 @@ function filterData(worldMap, Data){
             centroidByCountry.set(d.properties.name, centroid)
         }
       
-      return {  state:d.properties.name, 
+      return {  country:d.properties.name, 
                 x0:centroid[0], 
                 y0:centroid[1], 
                 x:centroid[0], 
@@ -62,45 +89,78 @@ function filterData(worldMap, Data){
                 r:0
               };
     })
-    // center.push(Data);
-
-      DataSite.forEach(function(eachState){
-      
+      DataSite.forEach(function(eachCountry){
             var total = 0;
             var category = 0;
-                eachState.values.forEach(function(eachCategory) {         
+                eachCountry.values.forEach(function(eachCategory) {         
                     totalCatgory = eachCategory.values.length      
                     eachCategory.total = totalCatgory
                     total += totalCatgory
-
                 })
+            eachCountry.total = total;
 
-            eachState.total = total;
-
-            if (centroidByCountry.get(eachState.key) != undefined) {
-                eachState.x0 = centroidByCountry.get(eachState.key)[0]
-                eachState.x = centroidByCountry.get(eachState.key)[0]
-                eachState.y = centroidByCountry.get(eachState.key)[1]
-                eachState.y0 = centroidByCountry.get(eachState.key)[1]
-          }
-            if(siteByCountry.has(eachState.key) == false) {
-              siteByCountry.set(eachState.key, eachState.total);   
+            if (centroidByCountry.get(eachCountry.key) != undefined) {
+                eachCountry.x0 = centroidByCountry.get(eachCountry.key)[0]
+                eachCountry.x = centroidByCountry.get(eachCountry.key)[0]
+                eachCountry.y = centroidByCountry.get(eachCountry.key)[1]
+                eachCountry.y0 = centroidByCountry.get(eachCountry.key)[1]
             }
-            if (categoryByCountry.has(eachState.key) == false ){
-            categoryByCountry.set(eachState.key, totalCatgory);    
-            }
+            if(siteByCountry.has(eachCountry.key) == false) {
+              siteByCountry.set(eachCountry.key, eachCountry.total);  
+              } 
             
-    console.log(eachState);
-      })
+            if (categoryByCountry.has(eachCountry.key) == false ){
+            categoryByCountry.set(eachCountry.key, totalCatgory);    
+            }
+      drawRect(center);
 
-//---------------------------------------------------------------------------------------Draw 
-      draw(center);
-} //filterData
 
-function draw(center){
+  })
+
+var newDataSite = DataSite
+    .sort(function(a, b){
+    return d3.descending(a.total, b.total)})
+
+
+var countryli = d3.select(".country-list");
+  countryli.selectAll('li')
+  .data(newDataSite)
+  .enter()
+  .append('li')
+  .text(function(d){ return [d.total + '  ' + d.key] })
+  .on('mouseover',function(d,i){
+      dispatch.countryHover(i);
+       console.log(i)
+  })
+  .on('mouseleave',function(d,i){
+    dispatch.countryLeave(i);
+  })
+
+dispatch.on('countryHover', function(index){
+  countryli.filter(function(d,i){
+                return i == index;
+            })
+      .style('color','red');
+});
+dispatch.on('countryLeave', function(index){
+  countryli.filter(function(d,i){
+      return i == index;
+  })
+      .style('color',null);
+
+})
+
+
+
+} //drawMap
+
+
+
+
+
+function drawRect(center){
       var nodes = svg.selectAll('.countries')
-
-            .data(center, function(d){return d.state});
+            .data(center);
         var nodesEnter = nodes.enter()
             .append('g')
             .attr('class','countries')
@@ -108,31 +168,44 @@ function draw(center){
         nodes.exit().remove();
         nodes
             .attr('transform',function(d){ return 'translate('+d.x+','+d.y+')';})
-                    .attr('opacity', 1)
-
+            .attr('opacity', .1)
         nodes.append('rect')
             .attr('x', function(d){ return 0 }).attr('y', function(d){ return 0 })
-                .attr("width", function(d){
-                   var values = siteByCountry.get(d.state);
-                  if (values>=0) {return scaleR(values);} else { return scaleR(0);}
-                  })
-                   .attr("height", function(d){
-                  var values = siteByCountry.get(d.state);
+            .attr("width", function(d){
+               var values = siteByCountry.get(d.country);
+              if (values>=0) {return scaleR(values);} else { return scaleR(0);}
+              })
+               .attr("height", function(d){
+              var values = siteByCountry.get(d.country);
 
-                  if (values>=0) { return scaleR(values); } else { return scaleR(0); }              
-                  })
-                .style('fill-opacity',.3)
-                .on("mousemove", function(d){
-             var values = siteByCountry.get(d.state);
-                    var tooltip = d3.select(".tooltip")
-                        .style("visibility","visible")
+              if (values>=0) { return scaleR(values); } else { return scaleR(0); }              
+              })
+            .style('fill-opacity',.3)
+            .on("mousemove", function(d,i){
+
+//make broadcast function using index? to match d.key of list
+console.log(i, d.country);
+             var values = siteByCountry.get(d.country);
+             var tooltip = d3.select(".tooltip")
+                .style("visibility","visible")
                     tooltip
                         .select('h2')
-                        .html(d.state + "<br> " + values)     
+                        .html(d.country + "<br> " + values)  
+   
 
-//   console.log("draw center", center)
+
+
+
 
         });
+
+
+
+
+
+
+
+
 //---------------------------------------------------------------------------------------
         force.stop();
         force.nodes([])
@@ -161,7 +234,7 @@ function draw(center){
             }
         } //gravity
         function collide(dataPoint, center){
-          var values = siteByCountry.get(dataPoint.state);
+          var values = siteByCountry.get(dataPoint.country);
           if (values>=0) { var nr = (scaleR(values)/Math.sqrt(2))+ padding} else {var nr = scaleR(0)+ padding;}
           dataPoint.r = nr 
             var nx1 = dataPoint.x - nr,
@@ -190,18 +263,6 @@ function draw(center){
 } //draw(center)
 
 
-
-});
-
-//------------------------------------------------------------------------parse data
-
-function parseData(d){ 
-    return { 
-      'name':(d["site_name_en"] == " " ? undefined: d["site_name_en"]),
-      'category': (d["category"] == " " ? undefined: d["category"]),
-      'state': (d["states_name_en"] == " " ? undefined: d["states_name_en"])
-  };
-}
 
 
 
