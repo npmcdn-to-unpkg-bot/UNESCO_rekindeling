@@ -121,42 +121,28 @@ var newDataSite = DataSite
     .sort(function(a, b){
     return d3.descending(a.total, b.total)})
 
+//d3.selectAll('.country-list')
 
 var countryli = d3.select(".country-list");
   countryli.selectAll('li')
   .data(newDataSite)
   .enter()
   .append('li')
-  .text(function(d,i){ return [d.total + '  ' + d.key] })
-  // .on('mouseover',function(d,i){
-  //     dispatch.countryHover(i);
-  //      console.log(i)
-  // })
-      .on('mousemove',function(d,i){
-        dispatch.countryHover(i);
-       
-    })
-
-    .each(function(d,i){
-
-        var countryselect = d3.select(this).style('fill','red');
-
-        dispatch.on('countryHover.'+i,function(d,i){
-            countryselect.style('color', 'blue')
-                   console.log(i)
-        })
-    })
-
-
-
+  .text(function(d){ return [d.total + '  ' + d.key] })
+  .on('mouseover',function(d,i){
+      dispatch.countryHover(i);
+       console.log(i)
+  })
   .on('mouseleave',function(d,i){
     dispatch.countryLeave(i);
   })
 
-dispatch.on('countryHover', function(index){
-  countryli.filter(function(d,i){
-                return i == index;
-            })
+
+
+//---------- this is the listener function ------------------//
+
+dispatch.on('countryHover.'+i, function(index){
+  countryli.filter(function(d,i) { return i == index; })
       .style('color','red');
 });
 dispatch.on('countryLeave', function(index){
