@@ -14,7 +14,7 @@ var map = d3.select('.map')
 var projection = d3.geo.mercator()
       .translate([width/2, height/2])
       .scale(150);
-    
+
 var map_path = d3.geo.path()
       .projection(projection);
 
@@ -37,7 +37,10 @@ function parseUnesco(d){
       'site_country': (d["states_name_en"] == " " ? undefined: d["states_name_en"]),
       'region': d.region_name_en,
       'date': d.date_inscribed,
-      'id': d.unique_number
+      'id': +d.unique_number,
+      'lat': +d.latitude,
+      'lng': +d.longitude
+
   };
 }
 
@@ -113,28 +116,24 @@ function appendMap(d){
 
 var geo_country = topojson.feature(worldMap_, worldMap_.objects.countries).features;
 
-
 var worldmap = map.selectAll('.states')
         .data(geo_country)
         .enter()
         .append('path')
-        .attr('class', 'state_path')
+        .attr('class', 'world_path')
         .attr('d', map_path)
 
 
-    var geoPoints = map.selectAll('.geo_points')
-        .data(data)
+    var siteNodes = map.selectAll('.site_nodes')
+        .data(Sites_)
         .enter()
         .append('circle')
-        .attr('class', 'map_circles')
-        .attr('r',0)
+        .attr('class', 'site_nodes')
+        .attr('r',2)
         .attr("transform", function(d) {
-      return "translate(" + projection([
-        d.lng,
-        d.lat
-      ]) + ")"})
+          return "translate(" + projection([ d.lng, d.lat]) + ")"})
 
-    geoPoints.attr('r',0).transition().duration(500).attr("r", 2 * (w / goodCircleWidth))
+
 }
 
 
