@@ -25,37 +25,32 @@ var path = d3.geo.path()
 
 var scaleR = d3.scale.sqrt().range([0,50]).domain([0,47]);
 var parseDate = d3.time.format("%Y").parse;    
-//var values;
 var siteByCountry = d3.map();
 var centroidByCountry = d3.map();
-var categoryByCountry = d3.map();
 var newDataSite;
 var DataSite;
 //------------------------------------------------------------------------load data     
 queue()
       .defer(d3.json, "data/countries.geo.json")
-      .defer(d3.csv, "data/unescoData.csv", parseUnesco)
+      .defer(d3.csv, "data/UNESCO.csv", parseUnesco)
       .await(DataLoaded)
 
 var dispatch = d3.dispatch('countryHover', 'countryLeave');
 
 function parseUnesco(d){ 
     return { 
-      'name':(d["site_name_en"] == " " ? undefined: d["site_name_en"]),
+      'name':(d["name_en"] == " " ? undefined: d["name_en"]),
       'category': (d["category"] == " " ? undefined: d["category"]),
       'country': (d["states_name_en"] == " " ? undefined: d["states_name_en"]),
-      'region': d.name_en,
+      'region': d.region_name_en,
       'date': d.date_inscribed,
   };
 }
 
 function DataLoaded(err, worldMap_, DataSite_){
-          DataSite_.forEach(function(d) {
-            var newDate = parseDate(d.date);
-            d.newDate = newDate;
-
-
-
+  DataSite_.forEach(function(d) {
+      var newDate = parseDate(d.date);
+      d.newDate = newDate;
 
 var nestedNodes = d3.nest()
     .key(function (d){return d.country; })
@@ -66,70 +61,25 @@ var nestedNodes = d3.nest()
     nestedNodes.forEach(function(country){
             total = country.values.length
             country.total = total
-           // country_total += country.total
         })
-  //  console.log(nestedNodes)
 
 var data = nestedNodes
         .sort(function(a, b){
         return d3.descending(a.total, b.total)
       })
+//console.log(data)//console.log(DataSite_)
 
-   console.log(data)
+//setup(worldMap_, data);
 
-data = nestedNodes.map(function (d){
-    return {
-        country: d.key,
-        value: d.total,
-        name: d.site_name_en
-
-    }
+  })
+}
+//--------------------------------------------------------------
 
 
 
-})
+// function setup(worldMap, data){
 
-
-
-
-
-
-
-
-
-
-        });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-     // NestData(worldMap_,DataSite_)  
-}     
-
-// function NestData(worldMap, DataSite_){
-//     DataSite=d3.nest()
-//        .key(function(d) {return d.country;})
-//       // .key(function(d) {return d.category;})
-//        .sortKeys(d3.ascending)
-//        .entries(DataSite_)
-
-//     var center = []
+//   var center = []
 //     center = worldMap.features.map(function(d){
 //         var centroid = path.centroid(d);
 //         if (centroidByCountry.has(d.properties.name) == false) {
@@ -144,89 +94,83 @@ data = nestedNodes.map(function (d){
 //               };
 //     }) //center
 
-  //     DataSite.forEach(function(eachCountry){
-  //           var total = 0;
-  //                   totaCountry = eachCountry.values.length      
-  //                   eachCountry.total = totalCountry
-  //                   total += totalCountry
+//       data.forEach(function(country){
 
-  //           eachCountry.total = total;
+//             if (centroidByCountry.get(country.key) != undefined) {
+//                 country.x0 = centroidByCountry.get(country.key)[0]
+//                 country.x = centroidByCountry.get(country.key)[0]
+//                 country.y = centroidByCountry.get(country.key)[1]
+//                 country.y0 = centroidByCountry.get(country.key)[1]
+//             }
+//             if(siteByCountry.has(country.key) == false) {
+//               siteByCountry.set(country.key, country.total);  
+//               } 
 
-  //           if (centroidByCountry.get(eachCountry.key) != undefined) {
-  //               eachCountry.x0 = centroidByCountry.get(eachCountry.key)[0]
-  //               eachCountry.x = centroidByCountry.get(eachCountry.key)[0]
-  //               eachCountry.y = centroidByCountry.get(eachCountry.key)[1]
-  //               eachCountry.y0 = centroidByCountry.get(eachCountry.key)[1]
-  //           }
-  //           if(siteByCountry.has(eachCountry.key) == false) {
-  //             siteByCountry.set(eachCountry.key, eachCountry.total);  
-  //             } 
             
-  //           if (categoryByCountry.has(eachCountry.key) == false ){
-  //           categoryByCountry.set(eachCountry.key);    
-  //           }
-  //     drawRect(center, newDataSite);
+//  drawRect(center);
 
+//   })
 
-  // })
-
+// }
 
 
 
+  
 
 
 
-// d3.selectAll('.country-list').call(appendCountryList)
+
+d3.selectAll('.country-list').call(appendCountryList)
 
 
-//   function appendCountryList(selection){
+  function appendCountryList(selection){
 
-//     var countryli = d3.select(".country-list").append('ul');
-//       countryli.selectAll('li')
-//       .data(DataSite)
-//       .enter()
-//       .append('li').attr('class', 'lst')
-//       .text(function(d){ return [d.total + '  ' + d.key] })
+    var countryli = d3.select(".country-list").append('ul');
+      countryli.selectAll('li')
+      .data(DataSite)
+      .enter()
+      .append('li').attr('class', 'lst')
+      .text(function(d){ return [d.total + '  ' + d.key] })
 
-//       .on('mouseover',function(d,i){
-//           dispatch.countryHover(i);
-//            console.log(i)
-//              var values = siteByCountry.get(d.name);
-//              var tooltip = d3.select(".tooltip")
-//                 .style("visibility","visible")
-//                     tooltip
-//                         .select('h2')
-//                         .html(d.key)  
+      .on('mouseover',function(d,i){
+          dispatch.countryHover(i);
+           console.log(i)
+             var values = siteByCountry.get(d.name);
+             var tooltip = d3.select(".tooltip")
+                .style("visibility","visible")
+                    tooltip
+                        .select('h2')
+                        .html(d.key)  
    
-//       })
-//       .on('mouseleave',function(d,i){
-//         dispatch.countryLeave(i);
-//       });
+      })
+      .on('mouseleave',function(d,i){
+        dispatch.countryLeave(i);
+      });
 
-//     //---------- this is the listener function ------------------//
+    //---------- this is the listener function ------------------//
 
-//     dispatch.on('countryHover.'+selection, function(index){
-//     //  console.log(countryli)
-//       selected = countryli.selectAll('.lst').filter(function(d,i) { 
-//         return i == index; 
-//       })
-//       // selectedname = siteli.selectAll('.sitelst').filter(function(d,i){
-//       //   return i==index;
-//       // }) 
-//       selected.style('color','red');
-//     //  selectedname.style('visibility', 'visible');
-//     });
+    dispatch.on('countryHover.'+selection, function(index){
+    //  console.log(countryli)
+      selected = countryli.selectAll('.lst').filter(function(d,i) { 
+        return i == index; 
+      })
+      // selectedname = siteli.selectAll('.sitelst').filter(function(d,i){
+      //   return i==index;
+      // }) 
+      selected.style('color','red');
+    //  selectedname.style('visibility', 'visible');
+    });
 
 
 
-//     dispatch.on('countryLeave', function(index){
-//       selected = countryli.selectAll('.lst').filter(function(d,i) { 
-//         return i == index; 
-//       });
-//       selected.style('color',null);
-//       // selectedname.style('visibility', 'hidden');
-//     });
-//   }
+    dispatch.on('countryLeave', function(index){
+      selected = countryli.selectAll('.lst').filter(function(d,i) { 
+        return i == index; 
+      });
+      selected.style('color',null);
+      // selectedname.style('visibility', 'hidden');
+    });
+  }
 
 
 
