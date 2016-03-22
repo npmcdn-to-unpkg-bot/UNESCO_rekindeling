@@ -24,48 +24,53 @@ var path = d3.geo.path()
             .gravity(0);
 
 var scaleR = d3.scale.sqrt().range([0,50]).domain([0,47]);
-    
+var parseDate = d3.time.format("%Y").parse;    
 var values;
 var siteByCountry = d3.map();
 var centroidByCountry = d3.map();
 var categoryByCountry = d3.map();
-
+var newDataSite;
 //------------------------------------------------------------------------load data     
 queue()
       .defer(d3.json, "data/countries.geo.json")
       .defer(d3.csv, "data/unescoData.csv", parseUnesco)
       .await(DataLoaded)
 
+var dispatch = d3.dispatch('countryHover', 'countryLeave');
+
 function parseUnesco(d){ 
     return { 
       'name':(d["site_name_en"] == " " ? undefined: d["site_name_en"]),
       'category': (d["category"] == " " ? undefined: d["category"]),
       'country': (d["states_name_en"] == " " ? undefined: d["states_name_en"]),
-      'region': d.name_en
+      'region': d.name_en,
+      'date': d.date_inscribed,
   };
 }
 
 function DataLoaded(err, worldMap_, DataSite_){
-        
+          DataSite_.forEach(function(d) {
+            var newDate = parseDate(d.date);
+            d.newDate = newDate;
+        });
+
+
      NestData(worldMap_,DataSite_)  
 }     
-
+var DataSite;
 function NestData(worldMap, DataSite_){
-
-    var DataSite=d3.nest()
+    DataSite=d3.nest()
        .key(function(d) {return d.country;})
        .key(function(d) {return d.category;})
        .sortKeys(d3.ascending)
        .entries(DataSite_)
+
     var center = []
     center = worldMap.features.map(function(d){
-
         var centroid = path.centroid(d);
-
         if (centroidByCountry.has(d.properties.name) == false) {
             centroidByCountry.set(d.properties.name, centroid)
         }
-      
       return {  country:d.properties.name, 
                 x0:centroid[0], 
                 y0:centroid[1], 
@@ -73,65 +78,131 @@ function NestData(worldMap, DataSite_){
                 y:centroid[1], 
                 r:0
               };
-    })
+    }) //center
 
-      DataSite.forEach(function(eachState){
+      DataSite.forEach(function(eachCountry){
             var total = 0;
             var category = 0;
-                eachState.values.forEach(function(eachCategory) {         
+                eachCountry.values.forEach(function(eachCategory) {         
                     totalCatgory = eachCategory.values.length      
                     eachCategory.total = totalCatgory
                     total += totalCatgory
                 })
-            eachState.total = total;
-            if (centroidByCountry.get(eachState.key) != undefined) {
-                eachState.x0 = centroidByCountry.get(eachState.key)[0]
-                eachState.x = centroidByCountry.get(eachState.key)[0]
-                eachState.y = centroidByCountry.get(eachState.key)[1]
-                eachState.y0 = centroidByCountry.get(eachState.key)[1]
+            eachCountry.total = total;
+
+            if (centroidByCountry.get(eachCountry.key) != undefined) {
+                eachCountry.x0 = centroidByCountry.get(eachCountry.key)[0]
+                eachCountry.x = centroidByCountry.get(eachCountry.key)[0]
+                eachCountry.y = centroidByCountry.get(eachCountry.key)[1]
+                eachCountry.y0 = centroidByCountry.get(eachCountry.key)[1]
             }
-            if(siteByCountry.has(eachState.key) == false) {
-              siteByCountry.set(eachState.key, eachState.total);  
+            if(siteByCountry.has(eachCountry.key) == false) {
+              siteByCountry.set(eachCountry.key, eachCountry.total);  
               } 
             
-            if (categoryByCountry.has(eachState.key) == false ){
-            categoryByCountry.set(eachState.key, totalCatgory);    
+            if (categoryByCountry.has(eachCountry.key) == false ){
+            categoryByCountry.set(eachCountry.key, totalCatgory);    
             }
-      
-      drawRect(center);
-})
-} //drawMap
+      drawRect(center, newDataSite);
 
+
+  })
+
+var newDataSite = DataSite
+    .sort(function(a, b){
+    return d3.descending(a.total, b.total)})
+
+d3.selectAll('.country-list').call(appendCountryList)
+console.log(newDataSite);
+
+
+  function appendCountryList(selection){
+
+    var countryli = d3.select(".country-list").append('ul');
+      countryli.selectAll('li')
+      .data(DataSite)
+      .enter()
+      .append('li').attr('class', 'lst')
+      .text(function(d){ return [d.total + '  ' + d.key] })
+
+      .on('mouseover',function(d,i){
+          dispatch.countryHover(i);
+           console.log(i)
+             var values = siteByCountry.get(d.name);
+             var tooltip = d3.select(".tooltip")
+                .style("visibility","visible")
+                    tooltip
+                        .select('h2')
+                        .html(d.key)  
+   
+      })
+      .on('mouseleave',function(d,i){
+        dispatch.countryLeave(i);
+      });
+
+    //---------- this is the listener function ------------------//
+
+    dispatch.on('countryHover.'+selection, function(index){
+    //  console.log(countryli)
+      selected = countryli.selectAll('.lst').filter(function(d,i) { 
+        return i == index; 
+      })
+      // selectedname = siteli.selectAll('.sitelst').filter(function(d,i){
+      //   return i==index;
+      // }) 
+      selected.style('color','red');
+    //  selectedname.style('visibility', 'visible');
+    });
+
+
+
+    dispatch.on('countryLeave', function(index){
+      selected = countryli.selectAll('.lst').filter(function(d,i) { 
+        return i == index; 
+      });
+      selected.style('color',null);
+      // selectedname.style('visibility', 'hidden');
+    });
+  }
+
+
+
+} 
 function drawRect(center){
       var nodes = svg.selectAll('.countries')
-            .data(center, function(d){return d.country});
+            .data(center);
         var nodesEnter = nodes.enter()
             .append('g')
             .attr('class','countries')
             .attr('opacity', 0)      
-        nodes.exit().remove();
+        nodes.exit().remove();  
         nodes
             .attr('transform',function(d){ return 'translate('+d.x+','+d.y+')';})
             .attr('opacity', .1)
         nodes.append('rect')
             .attr('x', function(d){ return 0 }).attr('y', function(d){ return 0 })
             .attr("width", function(d){
-               var values = siteByCountry.get(d.country);
-              if (values>=0) {return scaleR(values);} else { return scaleR(0);}
-              })
+              var values = siteByCountry.get(d.country);
+
+            
+             if (values>=0) {return scaleR(values);} else { return scaleR(0);}
+             })
                .attr("height", function(d){
               var values = siteByCountry.get(d.country);
 
               if (values>=0) { return scaleR(values); } else { return scaleR(0); }              
               })
-            .style('fill-opacity',.3)
-            .on("mousemove", function(d){
+            .on("mousemove", function(d,i){
+            //make broadcast function using index? to match d.key of list
+         //   console.log(i, d.country);
+
              var values = siteByCountry.get(d.country);
-                    var tooltip = d3.select(".tooltip")
-                        .style("visibility","visible")
+             var tooltip = d3.select(".tooltip")
+                .style("visibility","visible")
                     tooltip
                         .select('h2')
-                        .html(d.country + "<br> " + values)     
+                        .html(d.country + "<br> " + values)  
+   
         });
 //---------------------------------------------------------------------------------------
         force.stop();
