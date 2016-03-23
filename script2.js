@@ -20,7 +20,7 @@ var map_path = d3.geo.path()
 
 
 var parseDate = d3.time.format("%Y").parse;    
-
+var Sites;
 //------------------------------------------------------------------------load data     
 queue()
       .defer(d3.json, "data/world-50m.json")
@@ -61,71 +61,56 @@ function DataLoaded(err, worldMap_, Countries_, Sites_){
       var newDate = parseDate(d.date);
       d.newDate = newDate;
   })
+Sites = d3.nest()
+    .key(function(d){ return d.site_country })
+    .entries(Sites_)
+
+    var total=0;
+
+    Sites.forEach(function(country){
+            total = country.values.length
+            country.total = total
+        })
+
+var NestedSites =Sites
+        .sort(function(a, b){
+        return d3.descending(a.total, b.total)
+      })
 
 
- setup(worldMap_, Countries_, Sites_) 
+
+    console.log(NestedSites)
+
+ setup(worldMap_, Countries_, Sites) 
 }
 //--------------------------------------------------------------
 
-
-
-
-
 var countryli;
+var siteNodes;
+var dropDown = d3.select("#filter").append("select")
+                  .attr("name", "country-list");
+
 function setup(worldMap_, Countries_, Sites_){
 
-d3.selectAll('.country-list').call(appendCountryList)
-d3.selectAll('.map').call(appendMap)
-
-
-// countryli.on('click', function() {
-//       var selected = d3.select(this).select("select").property("value")
-//       var cd = nested_data.filter(function(d) {
-//            return (selected == d.key)
-//       });
-//    updateNested_data(cd)
-//   });
 
 
 
+var options = dropDown.selectAll("option")
+         .data(Sites)
+         .enter()
+         .append("option");
 
+options.text(function (d) { return d.country; })
+       .attr("value", function (d) { return d.country; })
+       .attr('id', function(d){ return d.country});
 
-  function appendCountryList(selection){
-
-    countryli = d3.select(".country-list").append('ul');
-      countryli.selectAll('li')
-      .data(Countries_)
-      .enter()
-      .append('li').attr('class', 'lst')
-      .text(function(d){ return [d.total + '  ' + d.country] })
-
-      // .on('mouseover',function(d,i){
-      //     dispatch.countryHover(i);
-      // })
-      // .on('mouseleave',function(d,i){
-      //   dispatch.countryLeave(i);
-      // });
-
-    //---------- this is the listener function ------------------//
-
-  //   dispatch.on('countryHover.'+selection, function(index){
-  //     selected = countryli.selectAll('.lst').filter(function(d,i) { 
-  //       return i == index; 
-  //     })
-  //     selected.style('color','red');
-  //   });
-
-  //   dispatch.on('countryLeave', function(index){
-  //     selected = countryli.selectAll('.lst').filter(function(d,i) { 
-  //       return i == index; 
-  //     });
-  //     selected.style('color',null);
-  //   });
-  // }
- } 
-
-
-function appendMap(d){
+    // countryli = d3.select(".country-list").append('ul');
+    //   countryli.selectAll('li')
+    //   .data(Countries_)
+    //   .enter()
+    //   .append('li').attr('class', 'lst')
+    //   .text(function(d){ return [d.total + '  ' + d.country] })
+    //   .attr('id', function(d){ return d.country })
 
 var geo_country = topojson.feature(worldMap_, worldMap_.objects.countries).features;
 
@@ -137,7 +122,7 @@ var worldmap = map.selectAll('.states')
         .attr('d', map_path)
 
 
-    var siteNodes = map.selectAll('.site_nodes')
+   siteNodes = map.selectAll('.site_nodes')
         .data(Sites_)
         .enter()
         .append('circle')
@@ -147,14 +132,38 @@ var worldmap = map.selectAll('.states')
           return "translate(" + projection([ d.lng, d.lat]) + ")"})
 
 
+
+
+
+
+
+  options.on("change", function() {
+      var selected = this.value;
+      console.log(selected)
+      displayOthers = this.checked ? "inline" : "none";
+      display = this.checked ? "none" : "inline";
+
+
+      map.selectAll(".circles")
+          .filter(function(d) {return selected != d.country;})
+          .attr("display", displayOthers);
+          
+      map.selectAll(".circles")
+          .filter(function(d) {return selected == d.country;})
+          .attr("display", display);
+
+      });
+
+
+
+
+
+
+
+
 }
 
 
-
-
-
-
-}
 
 
 
