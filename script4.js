@@ -11,7 +11,7 @@ var map = d3.select('.map')
     .append('g')
     .attr('transform',"translate("+margin.l+","+margin.t+")");
 
-var projection = d3.geo.mercator()
+var projection = d3.geo.equirectangular()
       .translate([width/2, height/2])
       .scale(150);
 
@@ -20,7 +20,7 @@ var map_path = d3.geo.path()
 
 
 var parseDate = d3.time.format("%Y").parse;    
-var Sites;
+
 //------------------------------------------------------------------------load data     
 queue()
       .defer(d3.json, "data/world-50m.json")
@@ -28,7 +28,7 @@ queue()
       .defer(d3.csv, "data/UNESCO.csv", parseUnesco)
       .await(DataLoaded)
 
-var dispatch = d3.dispatch('countryHover', 'countryLeave');
+var dispatch = d3.dispatch('countryHover', 'countryLeave', 'countryClick');
 
 function parseUnesco(d){ 
     return { 
@@ -51,47 +51,107 @@ function parseCountries(d){
   };
 }
 
-
 function DataLoaded(err, worldMap_, Countries_, Sites_){
   Sites_.forEach(function(d) {
       var newDate = parseDate(d.date);
       d.newDate = newDate;
   })
-  Sites = d3.nest()
-      .key(function(d){ return d.site_country })
-      .entries(Sites_)
-
-      var total=0;
-
-  Sites.forEach(function(country){
-          total = country.values.length
-          country.total = total
-      })
-
-  var NestedSites =Sites
-          .sort(function(a, b){
-          return d3.descending(a.total, b.total)
-        })
-
- console.log(NestedSites)
-
- setup(worldMap_, Countries_, Sites) 
+ setup(worldMap_, Countries_, Sites_) 
 }
 //--------------------------------------------------------------
-
 var countryli;
-var siteNodes;
-
 function setup(worldMap_, Countries_, Sites_){
 
+d3.selectAll('.country-list').call(appendCountryList)
+d3.selectAll('.map').call(appendMap)
+d3.selectAll('.site_group').call(appendPics)
 
-  countryli = d3.select(".country-list").append('ul');
-    countryli.selectAll('li')
-    .data(Sites_)
-    .enter()
-    .append('li').attr('class', 'lst')
-    .text(function(d){ return [d.total + '  ' + d.key] })
-    .attr('id', function(d){ return d.country })
+  function appendCountryList(selection){
+
+    countryli = d3.select(".country-list").append('ul');
+      countryli.selectAll('li')
+      .data(Countries_)
+      .enter()
+      .append('li').attr('class', 'lst')
+      .text(function(d){ return [d.total + '  ' + d.country] })
+
+      .on('mouseover',function(d,i){
+          dispatch.countryHover(i);
+          countryName = d.country
+          countrySelect = d3.selectAll('.site_nodes').filter(function(d) {
+            return d.site_country == countryName;
+          })
+          countrySelect.transition().style('fill', 'red').attr('r',2)
+      })
+
+      .on('click', function(d,i){
+        d3.selectAll('.site_list').style('display', 'none')
+          countryName = d.country
+          countrySelectP = d3.selectAll('.site_list').filter(function(d){
+            return d.site_country == countryName;
+          })
+          countrySelectP.style('display', 'block');
+
+      })
+
+      .on('mouseleave',function(d,i){
+        dispatch.countryLeave(i);
+        countrySelect = d3.selectAll('.site_nodes').transition().delay(function(){
+          return 3;
+        }).style('fill', 'black').attr('r',1)
+      });
+
+    //---------- this is the listener function ------------------//
+
+    dispatch.on('countryHover.'+selection, function(index){
+      selected = countryli.selectAll('.lst').filter(function(d,i) { 
+        return i == index; 
+      })
+      selected.style('color','red');
+    });
+
+    dispatch.on('countryLeave', function(index){
+      selected = countryli.selectAll('.lst').filter(function(d,i) { 
+        return i == index; 
+      });
+      selected.style('color',null);
+    });
+
+
+    dispatch.on('countryClick', function(d){
+      selected = countryli.selectAll('.lst').filter(function(d,i) { 
+        return i == index; 
+      });
+      selected.classed('active')
+    }) 
+
+///////////////////////////////////////////toggle///////////////////
+function toggleItem(elem) {
+  for (var i = 0; i < elem.length; i++) {
+    elem[i].addEventListener("click", function(e) {
+      var current = this;
+      for (var i = 0; i < elem.length; i++) {
+        if (current != elem[i]) {
+          elem[i].classList.remove('myactive');
+        } 
+        else if (current.classList.contains('myactive') === true) {
+          current.classList.remove('myactive');
+        } 
+        else {
+          current.classList.add('myactive')
+        }
+      }
+      e.preventDefault();
+    });
+  };
+}
+toggleItem(document.querySelectorAll('.lst'));
+///////////////////////////////////////////toggle end////////////////
+
+} 
+
+
+function appendMap(d){
 
 var geo_country = topojson.feature(worldMap_, worldMap_.objects.countries).features;
 
@@ -103,33 +163,41 @@ var worldmap = map.selectAll('.states')
         .attr('d', map_path)
 
 
-   siteNodes = map.selectAll('.nodes_group').append("g")
-        .data(Sites_);
-    siteNodes.selectAll('.site_nodes')
-        .data(function(d){ return d.values })
+    var siteNodes = map.selectAll('.site_nodes')
+        .data(Sites_)
         .enter()
         .append('circle')
-        .attr('class', 'site_nodes')
-        .attr('r',2)
-        .attr("transform", function(values) {
+        .attr('r',1)
+        .attr('data-value', function(d){
+          return d.site_country;
+        })
+        .classed({'site_nodes': true})
+        .attr("transform", function(d) {
           return "translate(" + projection([ d.lng, d.lat]) + ")"})
-
-  countryli.on("click", function(d) {
-      var selected = this.value;
-      console.log(selected)
-      displayOthers = this.checked ? "inline" : "none";
-      display = this.checked ? "none" : "inline";
+}
 
 
-      map.selectAll(".site_nodes")
-          .filter(function(d) {return selected != d.name;})
-          .attr("display", displayOthers);
-          
-      map.selectAll(".site_nodes")
-          .filter(function(d) {return selected == d.name;})
-          .attr("display", display);
+function appendPics(d){
+    var siteGroup = d3.select('.site-list').append('ul');
+      siteGroup.selectAll('li')
+        .data(Sites_)
+        .enter()
+        .append('li')
+        .attr('data-value', function(d){
+          return d.site_country;
+        })
+        .classed({'site_list': true})
+        .text(function(d){ return d.name})
+       // .attr('hidden', true)
+       .style('display', 'none');
 
-      });
+}
+
+
+
+
+
+
 
 
 
@@ -139,8 +207,6 @@ var worldmap = map.selectAll('.states')
 
 
 }
-
-
 
 
 
