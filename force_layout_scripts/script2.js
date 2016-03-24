@@ -33,7 +33,7 @@ var newDataSite;
 //------------------------------------------------------------------------load data     
 queue()
       .defer(d3.json, "data/countries.geo.json")
-      .defer(d3.csv, "data/unescoData.csv", parseUnesco)
+      .defer(d3.csv, "data/UNESCO.csv", parseUnesco)
       .await(DataLoaded)
 
 var dispatch = d3.dispatch('countryHover', 'countryLeave');
@@ -120,7 +120,7 @@ console.log(newDataSite);
 
     var countryli = d3.select(".country-list").append('ul');
       countryli.selectAll('li')
-      .data(newDataSite)
+      .data(DataSite)
       .enter()
       .append('li').attr('class', 'lst')
       .text(function(d){ return [d.total + '  ' + d.key] })
@@ -128,38 +128,30 @@ console.log(newDataSite);
       .on('mouseover',function(d,i){
           dispatch.countryHover(i);
            console.log(i)
+             var values = siteByCountry.get(d.name);
+             var tooltip = d3.select(".tooltip")
+                .style("visibility","visible")
+                    tooltip
+                        .select('h2')
+                        .html(d.key)  
+   
       })
       .on('mouseleave',function(d,i){
         dispatch.countryLeave(i);
       });
 
-    var siteli = d3.select('.site-list');//.append('g');
-    siteli
-      .data(newDataSite)
-      .enter()
-      siteli.append('ul');
-      siteli.selectAll('li')
-      .data(function(d){ return d.values })
-      .enter()
-      .append('li')
-      .attr('class', 'sitelst')
-     .text(function(d){ return d.key })
-     // .style('visibility', 'hidden');
-
-
     //---------- this is the listener function ------------------//
 
     dispatch.on('countryHover.'+selection, function(index){
-      console.log(countryli)
+    //  console.log(countryli)
       selected = countryli.selectAll('.lst').filter(function(d,i) { 
         return i == index; 
       })
-      selectedname = siteli.selectAll('.sitelst').filter(function(d,i){
-        return i==index;
-      })
-
+      // selectedname = siteli.selectAll('.sitelst').filter(function(d,i){
+      //   return i==index;
+      // }) 
       selected.style('color','red');
-      selectedname.style('color', 'red');
+    //  selectedname.style('visibility', 'visible');
     });
 
 
@@ -169,7 +161,7 @@ console.log(newDataSite);
         return i == index; 
       });
       selected.style('color',null);
-        selectedname.style('color', null);
+      // selectedname.style('visibility', 'hidden');
     });
   }
 
@@ -203,6 +195,7 @@ function drawRect(center){
             .on("mousemove", function(d,i){
             //make broadcast function using index? to match d.key of list
          //   console.log(i, d.country);
+
              var values = siteByCountry.get(d.country);
              var tooltip = d3.select(".tooltip")
                 .style("visibility","visible")

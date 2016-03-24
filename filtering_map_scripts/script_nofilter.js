@@ -33,7 +33,7 @@ var categoryByCountry = d3.map();
 //------------------------------------------------------------------------load data     
 queue()
       .defer(d3.json, "data/countries.geo.json")
-      .defer(d3.csv, "data/unescoData.csv", parseData)
+      .defer(d3.csv, "data/UNESCO.csv", parseData)
       .await(function(err, worldMap, DataSite_){
         
      filterData(worldMap,DataSite_)  
