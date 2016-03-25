@@ -67,17 +67,22 @@ var siteNodes;
 
 function setup(worldMap_, SitesByCountry){
 
-  var country = SitesByCountry.get(d.category);
-  console.log('country', country)
+  var countrylist = SitesByCountry.keys();
 
-  countryli = d3.select(".country-list").append('ul');
+
+  //map.keys()
+  //
+  console.log('country', countrylist)
+
+  countryli = d3.select(".country-list")
+  .append('ul');
     countryli.selectAll('li')
-    .data(function(dd){
-      return SitesByCountry.get(dd.country)})
+    .data(countrylist)
     .enter()
-    .append('li').attr('class', 'lst')
+    .append('li')
+    .attr('class', 'lst')
     .text(function(d){ 
-    return d.site_country
+    return countrylist
     })
 
 
@@ -94,7 +99,7 @@ var worldmap = map.selectAll('.states')
    siteNodes = map.selectAll('.nodes_group').append("g")
         .data(SitesByCountry);
     siteNodes.selectAll('.site_nodes')
-        .data(function(d){ return d.values })
+        .data(countryli)
         .enter()
         .append('circle')
         .attr('class', 'site_nodes')

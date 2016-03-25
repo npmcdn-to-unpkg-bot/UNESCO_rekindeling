@@ -39,7 +39,8 @@ function parseUnesco(d){
       'date': d.date_inscribed,
       'id': +d.unique_number,
       'lat': +d.latitude,
-      'lng': +d.longitude
+      'lng': +d.longitude,
+      'description': d.short_description_en
 
   };
 }
@@ -75,16 +76,17 @@ d3.selectAll('.site_group').call(appendPics)
       .append('li').attr('class', 'lst')
       .text(function(d){ return [d.total + '  ' + d.country] })
 
-      // .on('mouseover',function(d,i){
-      //     dispatch.countryHover(i);
-      //     countryName = d.country
-      //     countrySelect = d3.selectAll('.site_nodes').filter(function(d) {
-      //       return d.site_country == countryName;
-      //     })
-      //     countrySelect.transition().style('fill', 'blue').attr('r',2)
-      // })
+      .on('mouseover',function(d,i){
+          dispatch.countryHover(i);
+          countryName = d.country
+          countrySelect = d3.selectAll('.site_nodes').filter(function(d) {
+            return d.site_country == countryName;
+          })
+          countrySelect.classed('hover', true);
+      })
 
       .on('click', function(d,i){
+        d3.selectAll('.site_nodes').classed('hover', false).attr('r', 1)
         d3.selectAll('.site_nodes').classed('myactive', false)
         d3.selectAll('.site_list').style('display', 'none')
 
@@ -96,18 +98,19 @@ d3.selectAll('.site_group').call(appendPics)
           countrySelect = d3.selectAll('.site_nodes').filter(function(d) {
             return d.site_country == countryName;
           })
-          countrySelect.classed('myactive', true)
+          countrySelect.classed('myactive', true).attr('r', 2)
 
 
       })
 
-      // .on('mouseleave',function(d,i){
-      //   dispatch.countryLeave(i);
-      //   countrySelect = d3.selectAll('.site_nodes').transition().delay(function(){
-      //     return 3;
-      //   }).style('fill', 'black').attr('r',1)
+      .on('mouseleave',function(d,i){
+        dispatch.countryLeave(i);
+        countrySelect = d3.selectAll('.site_nodes').filter(function(d) {
+            return d.site_country == countryName;
+          })
+          countrySelect.classed('hover', false);
 
-      // });
+      });
 
     //---------- this is the listener function ------------------//
 
@@ -115,7 +118,7 @@ d3.selectAll('.site_group').call(appendPics)
       selected = countryli.selectAll('.lst').filter(function(d,i) { 
         return i == index; 
       })
-      selected.style('color','red').style('opacity', 1);
+      selected.style('color','red').style('opacity', .7);
     });
 
     dispatch.on('countryLeave', function(index){
@@ -124,24 +127,6 @@ d3.selectAll('.site_group').call(appendPics)
       });
       selected.style('color',null).style('opacity', 1);
     });
-
-
-    // dispatch.on('countryClick', function(d){
-    //   selected = countryli.selectAll('.lst').filter(function(d,i) { 
-    //     return i == index; 
-    //   });
-    //   selected.classed('myactive')
-    // }) 
-
-
-    // dispatch.on('countryClickNode', function(d){
-
-    //   selected = countryli.selectAll('.lst').filter(function(d,i) { 
-    //     return i == index; 
-    //   });
-    //   selected.classed('myactive')
-
-    // }) 
 
 ///////////////////////////////////////////toggle///////////////////
 function toggleItem(elem) {
@@ -164,7 +149,7 @@ function toggleItem(elem) {
   };
 }
 toggleItem(document.querySelectorAll('.lst'));
-toggleItem(document.querySelectorAll('.site_nodes'));
+//toggleItem(document.querySelectorAll('.site_nodes'));
 ///////////////////////////////////////////toggle end////////////////
 
 } 
@@ -210,7 +195,6 @@ function appendPics(d){
        .style('display', 'none');
 
 }
-
 
 
 
