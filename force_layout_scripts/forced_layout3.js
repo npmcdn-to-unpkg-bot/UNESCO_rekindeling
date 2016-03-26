@@ -18,13 +18,18 @@ var projection = d3.geo.mercator()
 var map_path = d3.geo.path()
       .projection(projection);
 
+ var force = d3.layout.force()
+            .size([width,height])
+            .charge(-80)
+            .gravity(0);
+
+var scaleR = d3.scale.sqrt().range([0,50]).domain([0,47]);
 
 var parseDate = d3.time.format("%Y").parse;    
 var Sites;
 //------------------------------------------------------------------------load data     
 queue()
       .defer(d3.json, "data/world-50m.json")
-      //.defer(d3.csv, "data/countries.csv", parseCountries)
       .defer(d3.csv, "data/UNESCO.csv", parseUnesco)
       .await(DataLoaded)
 
@@ -44,37 +49,56 @@ function parseUnesco(d){
   };
 }
 
-countryMap = d3.map()
-counter = 0
+// var mapSitesPicByCountry = d3.map()
+// var mapCategoryByCountry = d3.map()
+// var mapSiteNameByCountry = d3.map()
+// var mapSiteDescriptionByCountry = d3.map()
+
+
+var mapSitesByCountry = d3.map()
+var mapCentroidByCountry = d3.map()
+
+
 var SitesByCountry;
+countByCountry = d3.map();
 function DataLoaded(err, worldMap_, Sites_){
-  console.log(Sites_)
+
   Sites_.forEach(function(d) {
-      counter = counter + 1;
       var newDate = parseDate(d.date);
       d.newDate = newDate;
-      countryMap.set(d.site_country, d.name)
-      d.counter = counter;
   })
 
  SitesByCountry = d3.nest()
         .key(function (d) { return d.site_country; })
-        .key(function (d) { return d.category; })
-        .entries(Sites_)
-        // .map(Sites_, d3.map);
- var total = 0;
- console.log(SitesByCountry)
-SitesByCountry.forEach(function(country){
-  console.log(country)
-})
-// countryMap.values().forEach(function(country){
-//             console.log(country)
+      //  .key(function (d) { return d.category; })
+        .map(Sites_, d3.map);
 
-//             total = country.values.length
-//             country.total = total
-// })
+var total = 0;
+// var countByCountry = d3.map();
 
-console.log(SitesByCountry)
+SitesByCountry.values().forEach(function(eachCountry){
+
+// console.log('country',eachCountry.length);
+  countByCountry.set(eachCountry[0].site_country, eachCountry.length)
+
+//[0] is each site, they all have ast least 1
+//the first entry of each group(key)/grouped by country
+//countByCountry is object and inside it are arrays...keys(), values(), methods() etc give the arrays from objects
+
+
+
+
+
+;})
+console.log(countByCountry)
+
+ // SitesByCountry = SitesByCountry
+ //          .sort(function(a, b){
+ //          return d3.descending(a.countByCountry.values(), b.countByCountry.values())
+ //        })
+
+
+
  setup(worldMap_, SitesByCountry) 
 }
 //--------------------------------------------------------------
@@ -84,23 +108,23 @@ var siteNodes;
 
 function setup(worldMap_, SitesByCountry){
 
-  var countrylist = countryMap.keys();
+  //var countrylist = SitesByCountry.keys();
+  // var categorylist = SitesByCountry.values();
+  //categotylist.get(length)
 
-  //console.log(countrylist[163])
-  //map.keys()
-  //
-  //console.log('country', countrylist)
 
   var countryli_ul = d3.select(".country-list")
   .append('ul');
   countryli = countryli_ul
     .selectAll('li')
-    .data(countrylist)
+    //d = data --> the keys = countries
+    .data(countByCountry.keys())
     .enter()
     .append('li')
     .attr('class', 'lst')
     .text(function(d){ 
-    return d
+      // d is country, countByCountry.get(d) is the 'value'
+      return countByCountry.get(d) + " " + d;
     })
 
 
@@ -112,42 +136,6 @@ var worldmap = map.selectAll('.states')
         .append('path')
         .attr('class', 'world_path')
         .attr('d', map_path)
-
-
-   siteNodes = map.selectAll('.nodes_group').append("g")
-        .data(countrylist);
-    siteNodes.selectAll('.site_nodes')
-        .data(function(d){ return d})
-        .enter()
-        .append('circle')
-        .attr('class', 'site_nodes')
-        .attr('r',2)
-        .attr("transform", function(values) {
-          return "translate(" + projection([ d.lng, d.lat]) + ")"})
-
-
-  countryli.on("click", function() {
-      var selected = this.value;
-      console.log(selecttged)
-      displayOthers = this.checked ? "inline" : "none";
-      display = this.checked ? "none" : "inline";
-
-
-      map.selectAll(".site_nodes")
-          .filter(function(d) {return selected != d.name;})
-          .attr("display", displayOthers);
-          
-      map.selectAll(".site_nodes")
-          .filter(function(d) {return selected == d.name;})
-          .attr("display", display);
-
-      });
-
-
-
-
-
-
 
 
 }

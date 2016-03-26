@@ -18,13 +18,18 @@ var projection = d3.geo.mercator()
 var map_path = d3.geo.path()
       .projection(projection);
 
+ var force = d3.layout.force()
+            .size([width,height])
+            .charge(-80)
+            .gravity(0);
+
+var scaleR = d3.scale.sqrt().range([0,50]).domain([0,47]);
 
 var parseDate = d3.time.format("%Y").parse;    
 var Sites;
 //------------------------------------------------------------------------load data     
 queue()
       .defer(d3.json, "data/world-50m.json")
-      //.defer(d3.csv, "data/countries.csv", parseCountries)
       .defer(d3.csv, "data/UNESCO.csv", parseUnesco)
       .await(DataLoaded)
 
@@ -44,37 +49,69 @@ function parseUnesco(d){
   };
 }
 
-countryMap = d3.map()
-counter = 0
+// var mapSitesPicByCountry = d3.map()
+// var mapCategoryByCountry = d3.map()
+// var mapSiteNameByCountry = d3.map()
+// var mapSiteDescriptionByCountry = d3.map()
+
+
+var mapSitesByCountry = d3.map()
+var mapCentroidByCountry = d3.map()
+
+
 var SitesByCountry;
+
 function DataLoaded(err, worldMap_, Sites_){
-  console.log(Sites_)
+
   Sites_.forEach(function(d) {
-      counter = counter + 1;
       var newDate = parseDate(d.date);
       d.newDate = newDate;
-      countryMap.set(d.site_country, d.name)
-      d.counter = counter;
+     // mapSitesByCountry.set(d.site_country, d.name)
+
   })
 
  SitesByCountry = d3.nest()
         .key(function (d) { return d.site_country; })
         .key(function (d) { return d.category; })
-        .entries(Sites_)
-        // .map(Sites_, d3.map);
- var total = 0;
- console.log(SitesByCountry)
-SitesByCountry.forEach(function(country){
-  console.log(country)
-})
-// countryMap.values().forEach(function(country){
-//             console.log(country)
+        .map(Sites_, d3.map);
 
-//             total = country.values.length
-//             country.total = total
-// })
 
 console.log(SitesByCountry)
+
+    // var center = []
+    // center = worldMap_.features.map(function(d){
+
+    //     var centroid = path.centroid(d);
+
+    //     if (centroidCountry.has(d.properties.name) == false) {
+    //         centroidCountry.set(d.properties.name, centroid)
+    //     }
+      
+    //   return {  state:d.properties.name, 
+    //             x0:centroid[0], 
+    //             y0:centroid[1], 
+    //             x:centroid[0], 
+    //             y:centroid[1], 
+    //             r:0
+    //           };
+    // })
+
+
+SitesByCountry.keys().forEach(function(eachCountry){
+  console.log('country',eachCountry);
+
+
+
+
+
+;})
+
+
+//mapSitesByCountry.top(Infinity).length
+
+
+console.log('values', SitesByCountry.values())
+
  setup(worldMap_, SitesByCountry) 
 }
 //--------------------------------------------------------------
@@ -84,12 +121,10 @@ var siteNodes;
 
 function setup(worldMap_, SitesByCountry){
 
-  var countrylist = countryMap.keys();
+  var countrylist = SitesByCountry.keys();
+  var categorylist = SitesByCountry.values();
+  //categotylist.get(length)
 
-  //console.log(countrylist[163])
-  //map.keys()
-  //
-  //console.log('country', countrylist)
 
   var countryli_ul = d3.select(".country-list")
   .append('ul');
@@ -112,42 +147,6 @@ var worldmap = map.selectAll('.states')
         .append('path')
         .attr('class', 'world_path')
         .attr('d', map_path)
-
-
-   siteNodes = map.selectAll('.nodes_group').append("g")
-        .data(countrylist);
-    siteNodes.selectAll('.site_nodes')
-        .data(function(d){ return d})
-        .enter()
-        .append('circle')
-        .attr('class', 'site_nodes')
-        .attr('r',2)
-        .attr("transform", function(values) {
-          return "translate(" + projection([ d.lng, d.lat]) + ")"})
-
-
-  countryli.on("click", function() {
-      var selected = this.value;
-      console.log(selecttged)
-      displayOthers = this.checked ? "inline" : "none";
-      display = this.checked ? "none" : "inline";
-
-
-      map.selectAll(".site_nodes")
-          .filter(function(d) {return selected != d.name;})
-          .attr("display", displayOthers);
-          
-      map.selectAll(".site_nodes")
-          .filter(function(d) {return selected == d.name;})
-          .attr("display", display);
-
-      });
-
-
-
-
-
-
 
 
 }
