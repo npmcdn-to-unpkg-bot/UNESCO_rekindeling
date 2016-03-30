@@ -84,8 +84,10 @@ SitesByCountry.values().forEach(function(eachCountry){
 //[0] is each site, they all have ast least 1
 //the first entry of each group(key)/grouped by country
 //countByCountry is object and inside it are arrays...keys(), values(), methods() etc give the arrays from objects
-
-
+// countByCountry.keys()
+//  .sort(function(a, b){
+//           return d3.descending(a.countByCountry.values(), b.countByCountry.values)
+//         })
 
 
 

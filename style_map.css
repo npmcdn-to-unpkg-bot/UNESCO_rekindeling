@@ -8,12 +8,13 @@ html,body,h1,h2,h3,h4,p,div,ul,li,svg{
 html,body{
     height: 100%;
     position: relative;
-    background:rgb(250,250,250);
+    background:#fff7f4;
     font-family: 'Lato';
 }
 div{
  
 }
+
 .world_path{
     fill:#e2e2e2;
     stroke-width:1px;

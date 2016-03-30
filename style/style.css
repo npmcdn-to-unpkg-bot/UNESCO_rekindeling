@@ -1,0 +1,170 @@
+html,body,h1,h2,h3,h4,p,div,ul,li,svg{
+    margin:0;
+    padding:0;
+    font-size:100%;
+}
+
+/*------------Structure-------------*/
+html,body{
+    height: 100%;
+    position: relative;
+    background:#fff7f4;
+    font-family: 'Lato';
+}
+@font-face{
+    font-family:Lato-Black;
+    src:url('fonts/lato/Lato-Black.eot');
+    src:url('fonts/lato/Lato-Black.woff');
+}
+
+@font-face{
+    font-family:Lato-Reg;
+    src:url('fonts/lato/Lato-Regular.eot');
+    src:url('fonts/lato/Lato-Regular.woff');
+}
+
+@font-face{
+    font-family:Lato-Thin;
+    src:url('fonts/lato/Lato-Thin.eot');
+    src:url('fonts/lato/Lato-Thin.woff');
+}
+@font-face{
+    font-family:Lato-Itc;
+    src:url('fonts/lato/Lato-Italic.eot');
+    src:url('fonts/lato/Lato-Italic.woff');
+}
+@font-face{
+    font-family:Arno-Caption;
+    src:url('fonts/ArnopPro/ArnoPro-BoldItalic.otf');
+}
+
+/*------------font-------------*/
+
+h1{ font-family:'ArnoPro-BoldItalic';
+    font-size:27px;
+    line-height:14.4px;
+
+}
+h2{ 
+
+    
+}
+p{
+    font-family:'Lato-Thin';
+    font-size: 12pt;
+    line-height:14.4px;
+}
+
+li{
+    list-style: none;
+    font-family:'Lato-Thin';
+    font-size: 12pt;
+    line-height:14.4px;
+}
+.container{
+    width:100%;
+    height: 100%;
+    margin-left:auto;
+}
+.scene{
+    width: 95%; height: 100%; margin: auto;
+}
+
+.leftBar{
+    width:20% ; 
+    height: 90%; 
+    position: absolute; 
+    z-index:10; 
+    top:0px; 
+    border-right:.5px solid black;
+  
+}
+.fixed-block{
+    z-index:20;
+    position:fixed;
+    width:20%;
+    background:#fff7f4;
+    height:240px;
+    padding-top:20px;
+    padding-bottom:20px;
+    border-bottom:.5px solid black;
+}
+.head-block{
+    position:relative;
+    height:50px;
+
+    padding-bottom:20px;
+    border-bottom:.5px solid black; 
+}
+
+.btn-block{
+    height:40px;
+    padding-top:20px;
+    padding-bottom:20px;
+    display:inline-block;
+}
+.text-block{
+    position:relative;
+    height:40px;
+    padding-top:20px;
+    padding-bottom:20px;
+    border-top:.5px solid black;
+    
+}
+
+.scroll-block{
+    position:relative;
+    overflow-y:scroll;
+    margin-top:200px;
+    height:400px;
+
+}
+.bottom-bar{
+    position:relative;
+    margin-top:50px;
+    height:200px;
+}
+.map{
+    position: fixed;
+    width:75%;
+    height: 800px;
+    top: 0;
+}
+
+/*------------svg-----------------*/
+.canvas .node{
+    fill: red;
+    stroke: #fff;
+    stroke-width:1.5px;
+}
+
+.canvas .link{
+    fill:none;
+    stroke:white;
+    stroke-width:1px;
+    opacity:.03;
+}
+
+.path {
+        stroke: white;
+        stroke-weight: 2px;
+        fill: white;
+      }
+
+.hide{
+    display:none;
+}      
+
+
+.myactive{
+  color:red;
+  fill:red;
+}
+
+.hover{
+  color:red;
+  opacity:.7;
+  fill:red;
+  opacity:.7;
+}
+

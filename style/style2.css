@@ -1,0 +1,165 @@
+html,body,h1,h2,h3,h4,p,div,ul,li,svg{
+    margin:0;
+    padding:0;
+    font-size:100%;
+}
+
+/*------------Structure-------------*/
+html,body{
+    height: 100%;
+    position: relative;
+    background:#fff7f4;
+    font-family: 'Lato';
+}
+@font-face{
+    font-family:Lato-Black;
+    src:url('fonts/lato/Lato-Black.eot');
+    src:url('fonts/lato/Lato-Black.woff');
+}
+
+@font-face{
+    font-family:Lato-Reg;
+    src:url('fonts/lato/Lato-Regular.eot');
+    src:url('fonts/lato/Lato-Regular.woff');
+}
+
+@font-face{
+    font-family:Lato-Thin;
+    src:url('fonts/lato/Lato-Light.eot');
+    src:url('fonts/lato/Lato-Light.woff');
+}
+@font-face{
+    font-family:Lato-Itc;
+    src:url('fonts/lato/Lato-Italic.eot');
+    src:url('fonts/lato/Lato-Italic.woff');
+}
+/*------------font-------------*/
+
+h1{ font-family:'Lato-Black';
+    font-size:27px;
+    line-height:22px;
+
+}
+h2{ 
+    font-family:'Lato-Italic';
+    font-size: 12pt;
+    line-height:14.4px;
+    }
+
+p{
+    font-family:'Lato-Thin';
+    font-size: 12pt;
+    line-height:17px;
+}
+
+li{
+    list-style: none;
+    font-family:'Lato-Thin';
+    font-size: 10pt;
+    line-height:17px;
+}
+.container{
+    width:100%;
+    height: 100%;
+    margin-left:auto;
+}
+.scene{
+    width: 95%; height: 100%; margin: auto;
+}
+
+.leftBar{
+    width:20% ; 
+    height: 100%; 
+    position: absolute; 
+    z-index:10; 
+    top:0px; 
+   /* border-right:.5px solid black;*/
+  
+}
+.fixed-block{
+    z-index:20;
+    position:fixed;
+    width:20%;
+    background:#fff7f4;
+    padding-top: 20px;
+    margin-bottom:20px;
+  /*  border-bottom:.5px solid black;*/
+}
+.btn-block{
+    padding-top: 20px;
+    margin-bottom:20px;
+    padding-right:5px;
+    display:inline-block;
+   
+}
+.btn{
+    background-color: #fff;
+    padding-left:10px;
+    padding-right:10px;
+    padding-top:5px;
+    padding-bottom:5px;
+}
+.text-block{
+    position:relative;
+    width:90%;
+    padding-top: 20px;
+    margin-bottom:20px;
+   /* border-top:.5px solid black;*/
+}
+
+.scroll-block{
+    position:relative;
+    overflow-y:scroll;
+    padding-top: 20px;
+    height:400px;
+/*    border-top:.5px solid black;*/
+
+}
+.bottom-bar{
+    position:relative;
+    margin-top:50px;
+    height:200px;
+}
+.map{
+    position: absolute;
+    width:75%;
+    left:20%;
+    height: 800px;
+    top: 0;
+}
+
+/*------------svg-----------------*/
+.canvas .node{
+    fill: red;
+    stroke: #fff;
+    stroke-width:1.5px;
+}
+.lst{
+    color:rgb(140, 140, 140);
+}
+.canvas .link{
+    fill:none;
+    stroke:white;
+    stroke-width:1px;
+    opacity:.03;
+}
+.hide{
+    display:none;
+}      
+
+
+.myactive{
+    color:black;
+    fill:black;
+    font-family:'Lato-Regular';
+}
+
+.hover{
+  opacity:.6;
+  opacity:.6;
+}
+
+a{
+    text-decoration: none;
+    text-decoration-color: none;
+}
