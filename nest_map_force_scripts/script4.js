@@ -23,7 +23,7 @@ var path = d3.geo.path()
             .charge(-80)
             .gravity(0);
 
-var scaleR = d3.scale.sqrt().range([0,50]).domain([0,47]);
+var scaleR = d3.scale.sqrt().range([0,40]).domain([0,53]);
 
 var parseDate = d3.time.format("%Y").parse;    
 var Sites;
@@ -116,6 +116,14 @@ countByCountryKey.forEach(function(cntry){
 
 appendCountryList(countByCountrySorted); 
 draw(center);
+appendSiteGallery(Sites_);
+// d3.selectAll('.country-list').call(appendCountryList)
+// d3.selectAll('.map').call(appendMap)
+// d3.selectAll('.site_gallery').call(appendSiteGallery)
+
+
+
+
 } //DataLoaded
 //--------------------------------------------------------------
 
@@ -211,6 +219,34 @@ toggleItem(document.querySelectorAll('.lst'));
 //toggleItem(document.querySelectorAll('.site_nodes'));
 ///////////////////////////////////////////toggle end////////////////
 }
+function appendSiteGallery(Sites_){
+  console.log(Sites_)
+
+ var site_gallery = d3.select('.site_gallery');
+    var sites = site_gallery.selectAll('.sites');
+    sites
+        .data(Sites_)
+        .enter()
+        .append('div')
+        // .attr('class', function(d){ return })
+        .attr('data-value', function(d){
+          return d.site_country;
+        })
+        .classed({'sites': true})
+        // .text(function(d){ return d.name})
+        // .style('display', 'none');
+
+
+sites.append('html').text()
+
+
+
+}
+
+
+
+
+
 function draw(center){
       var nodes =map.selectAll('.site_nodes')
             .data(center, function(d){return d.state});
