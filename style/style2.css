@@ -76,6 +76,14 @@ li{
    /* border-right:.5px solid black;*/
   
 }
+.rightBar{
+    left:20%;
+    width:70%;
+    height:90%;
+    top:10%;
+    position:absolute;
+}
+
 .fixed-block{
     z-index:20;
     position:fixed;
@@ -123,26 +131,27 @@ li{
     margin-top:50px;
     height:200px;
 }
-.rightBar{
-    left:35%;
-    width:75%;
-    position:absolute;
-}
+
 .map{
     position: absolute;
     width:100%;
-/*    left:20%;*/
-    height: 800px;
-    top: 0;
+    height: 80%;
 }
 .site_gallery{
     width:100%;
     height:200px;
+    top:70%;
+    position:absolute;
+
+}
+.site_img{
+    width:100%;
+    height:130px;
     top:500px;
+
     display:block;
     overflow: -moz-scrollbars-vertical;
     overflow-x:scroll;
-    position:absolute;
     background-color: white;
     white-space:nowrap;
 }
@@ -153,12 +162,16 @@ li{
     height:120px;
     border:.5px solid black;
     background-color: #d4d4d4
+    clip-path: rect(10px, 20px, 30px, 40px);
 
 }
 .site_text{
-    position:absolute;
-    width:300px;
+    position:relative;
+    width:60%;
     display:block;
+    text-align:center;
+    
+margin:auto;
 }
 /*------------svg-----------------*/
 .canvas .node{
