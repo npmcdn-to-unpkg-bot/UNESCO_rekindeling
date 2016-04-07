@@ -15,40 +15,42 @@ queue()
 
 function parseImage(d){ 
     return { 
-      'url': d.rgi_image
+      'url': d.rgi_image,
+      r:10
         };
 }
 var gallery;
-function DataLoaded(err, beforeWar, inWar){
+function DataLoaded(err, beforeWar, data){
 
- setupGallery(inWar) 
+ setupGallery(data) 
 }
 //--------------------------------------------------------------
 
 
-function setupGallery(inWar){
+function setupGallery(data){
 
-  gallery = d3.select(".gallery").append('svg');
+  gallery = d3.select(".gallery");
+  //.append('svg');
 
-  var xPos = Math.random()*width;
-  data = []
+  // var xPos = Math.random()*width;
+  // data = []
 
-  inWar.forEach(function(each){
-    data.push({
-        u:each.url,     
-        x:xPos,
-        x0:xPos,
-        y:height/2+Math.random()*5,
-        r:20
-    })
-    console.log(data)
-  })
+  // inWar.forEach(function(each){
+  //   data.push({
+  //       u:each.url,     
+  //       x:xPos,
+  //       x0:xPos,
+  //       y:height/2+Math.random()*5,
+  //       r:200
+  //   })
+  //   console.log(data)
+  // })
   draw(data);
 }
 
 function draw(data){
 
-var nodes = gallery.selectAll('img')
+var nodes = gallery.selectAll('.img')
     .data(data)
     .enter()
     // .append('g')
@@ -56,10 +58,12 @@ var nodes = gallery.selectAll('img')
     .append('image')
     .attr("xlink:href", function(d){ return d.url })
     .attr('class', 'image_node')
-    .attr('cx',function(d){return d.x})
-    .attr('cy',function(d){return d.y})
-    .attr('r',function(d){return d.r})
-    .attr('width', 100);
+    .attr('x',function(d){return d.x})
+    .attr('y',function(d){return d.y})
+    .attr('width', 200)
+    .attr('height', 100);
+    // .attr('width',function(d){return d.r})
+    // .attr('height',function(d){return d.r})
 
 //Collision detection
 force.nodes(data)

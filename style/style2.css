@@ -128,7 +128,7 @@ li{
 }
 .bottom-bar{
     position:relative;
-    margin-top:50px;
+/*    margin-top:50px;*/
     height:200px;
 }
 
@@ -202,6 +202,16 @@ margin:auto;
 .hover{
   opacity:.6;
   opacity:.6;
+}
+
+.image_node{
+    width:100px;
+
+}
+.gallery{
+    width:1000px;
+    height:800px;
+    position:absolute;
 }
 
 a{
