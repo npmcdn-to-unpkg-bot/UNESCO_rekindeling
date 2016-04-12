@@ -129,7 +129,8 @@ function draw(center){
             .data(center, function(d){return d.state})
         var nodesEnter = nodes.enter()
             .append('g')
-            .attr('opacity', 0)      
+            .attr('opacity', 0)
+            .attr('class','site_nodes');      
      
         nodes
             .attr('transform',function(d){ return 'translate('+d.x+','+d.y+')';})
@@ -140,9 +141,18 @@ function draw(center){
               return d.state;
             })
             .classed('country', true)
-            .classed({'site_nodes': true})
+            //.classed({'site_nodes': true})
             .attr('x', function(d){ return 0 }).attr('y', function(d){ return 0 })
                 .attr("width", function(d){
+                  //get array of sites for this country
+                  //stiesByCountry.get(d.id) --> array of all sites
+                  //now you need count of ??? (all, endangered, or cultural)
+                  //all --> sites.length
+                  //endanger --> sites.filter(...) --> array --> array.length
+
+
+
+
                    var values = countCountrySorted.get(d.state);
                   if (values>=0) {return scaleR(values); } else { return scaleR(0);}
                   })

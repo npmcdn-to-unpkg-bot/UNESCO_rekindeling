@@ -1,7 +1,9 @@
-var margin = {t:120,l:50,b:50,r:50},
+var margin = {t:50,l:50,b:50,r:50},
     width  = $('.map').width()-margin.l-margin.r,
     height = $('.map').height()-margin.t-margin.b,
     padding = 10;
+
+d3.select('.site_text').classed('hide', true);
 
 var map = d3.select('.map')
     .append('svg')
@@ -10,16 +12,16 @@ var map = d3.select('.map')
     .append('g')
     .attr('transform',"translate("+margin.l+","+margin.t+")");
 
-var projection = d3.geo.mercator().translate([width/2, height/2]).scale(150);
+var projection = d3.geo.mercator().translate([width/2.5, height/2]).scale(130);
     
-var path = d3.geo.path().projection(projection);
+var path = d3.geo.path().projection(projection); 
 var force = d3.layout.force().size([width,height]).charge(-80).gravity(0);
 var scaleR = d3.scale.sqrt().range([0,40]).domain([0,53]);
 var countryli, siteNodes, SitesByCountry, CountryInDanger;
 var centroidCountry = d3.map();
 countCountry = d3.map();
 countCountrySorted = d3.map();
-
+var All, Danger;
 //------------------------------------------------------------------------load data     
 queue()
       .defer(d3.json, "data/countries.geo.json")
@@ -68,14 +70,19 @@ var filterCultural_ = Sites_.filter(function(d){ return d.category == "Mixed"})
 
     $('#DangerBtn').on('click',function(d){
         d.preventDefault();
+        d3.selectAll(".site_nodes").remove();
         setup(worldMap_, filterDanger_);
     });
 
     $('#TotalBtn').on('click',function(d){
         d.preventDefault();
+        d3.selectAll(".site_nodes").remove();
         setup(worldMap_, Sites_)
         console.log('click');
     });
+   setup(worldMap_, Sites_)
+
+
 }//DataLoaded
 ///////////////////////////////////////////////////////////////////setup data
 function setup(worldMap_, Data){
@@ -94,11 +101,14 @@ function setup(worldMap_, Data){
                 r:0
               };
     })
+
   SitesByCountry = d3.nest()
           .key(function (d) { return d.country_id; })
           .map(Data, d3.map);
 
+
   SitesByCountry.values().forEach(function(eachCountry){
+   // console.log(SitesByCountry.get(eachCountry.country_id).length);
     countCountry.set(eachCountry[0].country_id, eachCountry.length);
 
               if (centroidCountry.get(eachCountry.key) != undefined) {
@@ -125,11 +135,12 @@ function setup(worldMap_, Data){
 /////////////////////////////////////////////////////////////////////////////////////////draw map
 function draw(center){
 
-      var nodes =map.selectAll('.site_nodes')
+      var nodes =map.selectAll('.site_n')
             .data(center, function(d){return d.state})
         var nodesEnter = nodes.enter()
             .append('g')
-            .attr('opacity', 0)      
+            .attr('opacity', 0)
+            .attr('class','site_nodes');      
      
         nodes
             .attr('transform',function(d){ return 'translate('+d.x+','+d.y+')';})
@@ -141,9 +152,15 @@ function draw(center){
             })
             .classed('country', true)
             .classed({'site_nodes': true})
-            .attr('x', function(d){ return 0 }).attr('y', function(d){ return 0 })
+            .attr('x', function(d){ return 0 })
+            .attr('y', function(d){ return 0 })
                 .attr("width", function(d){
-                   var values = countCountrySorted.get(d.state);
+                  //get array of sites for this country
+                  //stiesByCountry.get(d.id) --> array of all sites
+                  //now you need count of ??? (all, endangered, or cultural)
+                  //all --> sites.length
+                  //endanger --> sites.filter(...) --> array --> array.length
+                  var values = countCountrySorted.get(d.state);
                   if (values>=0) {return scaleR(values); } else { return scaleR(0);}
                   })
                    .attr("height", function(d){var values = countCountrySorted.get(d.state);
@@ -152,7 +169,7 @@ function draw(center){
            .on('mouseover', function(d, i){
               dispatch.countryHover(d);
             })
-              nodes.exit().remove();
+        
 //-------------------------------------------------------------------------
         force.stop();
         force.nodes([])
@@ -221,6 +238,7 @@ var countryli_ul = d3.select(".country-list")
       .data(countCountrySorted.keys())
       .enter()
       .append('li')
+      .attr('class', 'country-list')
       .classed('country', true)
       .classed('lst', true)
       .text(function(d){ 
@@ -245,6 +263,8 @@ var countryli_ul = d3.select(".country-list")
           site_text.select('p')
               .html('');
       })
+
+
 
 ///////////////////////////////////////////toggle///////////////////
 function toggleItem(elem) {
@@ -280,6 +300,7 @@ dispatch.on('countryHover', function(countryName){
       return d == countryName
     })
     countryLiSelect.classed('hover', true)
+    d3.select('.site_text').classed('hide', true);
 });
 
 dispatch.on('countryLeave', function(countryName){
@@ -306,6 +327,7 @@ dispatch.on('countryClick', function(countryName){
 
 
 function appendSiteGallery(Data){
+
  var site_gallery = d3.select('.site_img');
     var sites = site_gallery.selectAll('.sites');
     sites
@@ -319,7 +341,7 @@ function appendSiteGallery(Data){
 }
 ///////////////////////////////////////////toggle///////////////////
 function site_click(d){
-  var site_text= d3.select('.site_text');
+  var site_text= d3.select('.site_text').classed('hide', false);
     site_text.select('h2')
         .html(d.name)     
     site_text.select('p')

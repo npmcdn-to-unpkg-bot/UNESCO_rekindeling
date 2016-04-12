@@ -7,6 +7,7 @@ var force = d3.layout.force()
     .size([width,height])
     .charge(0)
     .gravity(0);
+    var nodes;
 //------------------------------------------------------------------------load data     
 queue()
       .defer(d3.csv, "imgData/Palmyra_beforeWar.csv", parseImage)
@@ -19,27 +20,82 @@ function parseImage(d){
       r:10
         };
 }
-var gallery;
+var   gallery = d3.select(".gallery").append('svg').attr('width', width).attr('height', height);
 
-function DataLoaded(err, beforeWar, data){
-  draw(data) 
+function DataLoaded(err, beforeWar, inWar){
+      $('#inWar').on('click',function(d){
+        d.preventDefault();
+        
+         d3.selectAll('.nodes').remove()
+
+        draw(inWar)   
+    });
+
+      $('#beforeWar').on('click',function(d){
+        d.preventDefault();
+
+       d3.selectAll('.nodes').remove()
+
+        draw(beforeWar)
+
+    });
 }
 //--------------------------------------------------------------
 
 
 
 function draw(data){
-  gallery = d3.select(".gallery").append('svg').attr('width', width).attr('height', height);
-var nodes = gallery.selectAll('.img')
-    .data(data)
+
+nodes = gallery.selectAll('.img')
+    .data(data);
+
+nodesEnter = nodes
     .enter()
-    // .append('clipPath')
     .append('image')
+    .attr('class', 'nodes')
     .attr("xlink:href", function(d){ return d.url })
     .attr('x',function(d){return d.x})
     .attr('y',function(d){return d.y})
     .attr('width', 200)
     .attr('height', 100);
+
+
+
+
+
+
+        // .enter()
+        // .append('g')
+        // .attr('class','nodes')
+        // .each(function(d){
+        //     d3.select(this)
+        //         .append('circle')
+        //         .attr('r',22)
+        //         .style('fill','#fff');
+        //     d3.select(this)
+        //         .append('image')
+        //         .attr('height',40)
+        //         .attr('width',16)
+        //         .attr('x',function(d){return d.x})
+        //         .attr('y',function(d){return d.y})
+        //         // .attr('x',-8)
+        //         // .attr('y',-20)
+        //         .attr('xlink:href',function(d){ return d.url });
+        // })
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 console.log(data)
 //Collision detection
 force.nodes(data)
@@ -54,19 +110,6 @@ function onForceTick(e){
     while( ++i<n ){
         q.visit(collide(data[i]));
     }
-
-    // nodes
-    //     .each(gravity(e.alpha*.01))
-    //     .attr('x',function(d){return d.x})
-    //     .attr('y',function(d){return d.y})
-
-    // function gravity(k){
-    //     //custom gravity: data points gravitate towards a straight line
-    //     return function(d){
-    //         d.y += (height/2 - d.y)*k;
-    //         d.x += (d.x0 - d.x)*k;
-    //     }
-    // }
  nodes
         .each(function(d){
         var focus = {};
@@ -78,11 +121,7 @@ function onForceTick(e){
         })
        .attr('y',function(d){return d.y})
        .attr('x',function(d){return d.x})
-
-
 }
-
-
     function collide(dataPoint){
         var nr = dataPoint.r + 100,
             nx1 = dataPoint.x - nr,

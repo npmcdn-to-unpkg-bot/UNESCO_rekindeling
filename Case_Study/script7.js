@@ -7,6 +7,7 @@ var force = d3.layout.force()
     .size([width,height])
     .charge(0)
     .gravity(0);
+    var nodes;
 //------------------------------------------------------------------------load data     
 queue()
       .defer(d3.csv, "imgData/Palmyra_beforeWar.csv", parseImage)
@@ -45,18 +46,22 @@ function DataLoaded(err, beforeWar, inWar){
 
 function draw(data){
 
-var nodes = gallery.selectAll('.img')
+nodes = gallery.selectAll('.img')
     .data(data);
 
-nodesEnter = nodes.enter()
-    .append('image')
+nodesEnter = nodes
+    .enter()
+    .append('circle')
     .attr('class', 'nodes')
-    .attr("xlink:href", function(d){ return d.url })
-    .attr('x',function(d){return d.x})
-    .attr('y',function(d){return d.y})
-    .attr('width', 200)
-    .attr('height', 100);
-console.log(data)
+   // .attr("xlink:href", function(d){ return d.url })
+    .attr('cx',function(d){return d.x})
+    .attr('cy',function(d){return d.y})
+    .attr('r', 50)
+
+    // .attr('width', 100)
+    // .attr('height', 100);
+
+
 //Collision detection
 force.nodes(data)
     .on('tick',onForceTick)
@@ -79,8 +84,8 @@ function onForceTick(e){
             d.x += (focus.x-d.x)*(e.alpha*.1);
             d.y += (focus.y-d.y)*(e.alpha*.1);
         })
-       .attr('y',function(d){return d.y})
-       .attr('x',function(d){return d.x})
+       .attr('cy',function(d){return d.y})
+       .attr('cx',function(d){return d.x})
 }
     function collide(dataPoint){
         var nr = dataPoint.r + 100,

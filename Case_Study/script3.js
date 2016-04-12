@@ -7,43 +7,89 @@ var force = d3.layout.force()
     .size([width,height])
     .charge(0)
     .gravity(0);
+
+
+ var gallery = d3.select(".gallery")
+  .append('svg')
+  .attr('class', 'svgGallery')
+  .attr('width', width)
+  .attr('height', height);
+
 //------------------------------------------------------------------------load data     
 queue()
-      .defer(d3.csv, "imgData/Palmyra_beforeWar.csv", parseImage)
-      .defer(d3.csv, "imgData/Palmyra_inWar.csv", parseImage)
+      .defer(d3.csv, "imgData/Palmyra.csv", parseImage)
       .await(DataLoaded)
 
 function parseImage(d){ 
     return { 
       'url': d.rgi_image,
-      r:10
+      r:10,
+      'time': d.Time
         };
 }
-var gallery;
 
-function DataLoaded(err, beforeWar, data){
-  draw(data) 
+
+
+// $('#inWar').on('click', inWar);
+
+
+
+function DataLoaded(err, data){
+
+        // draw(data);
+
+
+    d3.selectAll('.btn').on('click',function(){
+
+       var type = d3.select(this).attr('class');
+        if(type=='beforeWar'){
+             d3.selectAll('.nodes').filter(function(d){ return d.time == "beforeWar"});
+
+        }else{
+
+            d3.selectAll('.nodes').filter(function(d){ return d.time == "inWar"});
+
+        }
+    });
+
+
+   draw(data.filter(function(d){ return d.time == "beforeWar"}))
+
+
+
 }
 //--------------------------------------------------------------
 
 
 
 function draw(data){
-  gallery = d3.select(".gallery").append('svg').attr('width', width).attr('height', height);
-var nodes = gallery.selectAll('.img')
-    .data(data)
-    .enter()
+
+
+
+
+var nodes = gallery.selectAll('.nodes')
+        .data(data)
+    // .data(data.filter(function(d){ return d.time == "inWar"}));
+nodesEnter = nodes.enter()
     .append('image')
+ //   .attr('class', function(d){ return d.time})
+    .classed('nodes', true)
     .attr("xlink:href", function(d){ return d.url })
     .attr('x',function(d){return d.x})
     .attr('y',function(d){return d.y})
-    .attr('width', 200)
-    .attr('height', 100);
-console.log(data)
-//Collision detection
+    .attr('width', 100)
+    .attr('height', 70);
+
+nodes.exit().remove()
+
 force.nodes(data)
     .on('tick',onForceTick)
     .start();
+
+
+
+
+
 
 function onForceTick(e){
     var q = d3.geom.quadtree(data),
@@ -53,19 +99,6 @@ function onForceTick(e){
     while( ++i<n ){
         q.visit(collide(data[i]));
     }
-
-    // nodes
-    //     .each(gravity(e.alpha*.01))
-    //     .attr('x',function(d){return d.x})
-    //     .attr('y',function(d){return d.y})
-
-    // function gravity(k){
-    //     //custom gravity: data points gravitate towards a straight line
-    //     return function(d){
-    //         d.y += (height/2 - d.y)*k;
-    //         d.x += (d.x0 - d.x)*k;
-    //     }
-    // }
  nodes
         .each(function(d){
         var focus = {};
@@ -77,13 +110,9 @@ function onForceTick(e){
         })
        .attr('y',function(d){return d.y})
        .attr('x',function(d){return d.x})
-
-
 }
-
-
     function collide(dataPoint){
-        var nr = dataPoint.r + 5,
+        var nr = dataPoint.r + 100,
             nx1 = dataPoint.x - nr,
             ny1 = dataPoint.y - nr,
             nx2 = dataPoint.x + nr,
@@ -97,9 +126,9 @@ function onForceTick(e){
                     r = nr + quadPoint.point.r;
                 if(l<r){
                     l = (l-r)/l*.1;
-                    dataPoint.x -= x*= (l*.05);
+                    dataPoint.x -= x*= (l*2);
                     dataPoint.y -= y*= l;
-                    quadPoint.point.x += (x*.05);
+                    quadPoint.point.x += (x);
                     quadPoint.point.y += y;
                 }
             }

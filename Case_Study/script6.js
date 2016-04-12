@@ -7,6 +7,7 @@ var force = d3.layout.force()
     .size([width,height])
     .charge(0)
     .gravity(0);
+    var nodes;
 //------------------------------------------------------------------------load data     
 queue()
       .defer(d3.csv, "imgData/Palmyra_beforeWar.csv", parseImage)
@@ -44,19 +45,65 @@ function DataLoaded(err, beforeWar, inWar){
 
 
 function draw(data){
+//var defs = gallery
+//.append('defs');
+//defs.append('pattern')
+    // .attr('id', 'eachImage')
+    // .attr('patternUnits', 'userSpaceOnUse')
+    
 
-var nodes = gallery.selectAll('.img')
+// gallery.append("defs")
+//         .append("clipPath")
+//         .attr("id", "clip")
+//         .append("rect")
+//         .attr("width", 20)
+//         .attr("height", 20);
+
+nodes = gallery.selectAll('.img')
     .data(data);
 
-nodesEnter = nodes.enter()
-    .append('image')
+
+
+
+
+nodesEnter = nodes
+    .enter()
+   // .append('defs')
+   //  .append('pattern')
+   //  .attr('id', 'eachImage')
+   //  .attr('patternUnits', 'objectBoundingBox')
+   //  .attr('width', 25)
+   //  .attr('height', 25)
+
+
+
+    //.append('circle')
+        // .append("defs")
+        // .attr('x',function(d){return d.x})
+        // .attr('y',function(d){return d.y})
+        // .append("clipPath")
+        .attr("id", "clip")
+        .append("rect")
+        .attr("width", 20)
+        .attr("height", 20)
+
+    .append("image")
     .attr('class', 'nodes')
     .attr("xlink:href", function(d){ return d.url })
     .attr('x',function(d){return d.x})
     .attr('y',function(d){return d.y})
-    .attr('width', 200)
+    // .attr('cx',function(d){return d.x})
+    // .attr('cy',function(d){return d.y})
+    // .attr('r', 50)
+    .attr("clip-path", "url(#clipPath)")
+    .attr('width', 100)
     .attr('height', 100);
-console.log(data)
+// .append('circle')
+//     .attr('cx',function(d){return d.x})
+//     .attr('cy',function(d){return d.y})
+//     .attr('r', 50)
+// .style('fill', 'url(#eachImage)')
+
 //Collision detection
 force.nodes(data)
     .on('tick',onForceTick)

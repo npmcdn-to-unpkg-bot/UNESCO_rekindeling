@@ -117,6 +117,9 @@ var filterCultural_ = Sites_.filter(function(d){ return d.category == "Mixed"})
           .key(function (d) { return d.country_id; })
           .map(Data, d3.map);
 
+
+
+
   SitesByCountry.values().forEach(function(eachCountry){
     countCountry.set(eachCountry[0].country_id, eachCountry.length);
 

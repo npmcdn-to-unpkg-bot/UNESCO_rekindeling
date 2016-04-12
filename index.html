@@ -7,55 +7,64 @@
 		<META http-equiv="Content-Type" content="text/html; charset=EUC-JP">
 		<title>FinalVizTechScarpelli</title>
 		<link rel='stylesheet' type='text/css'>
-		<link href="style/style2.css" rel="stylesheet"/>
+				<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+		<link href="style/style4.css" rel="stylesheet"/>
 	</head>
 	<body>
 
 <div class="container">
 	<section class="scene">
+		<div class="row head-block">
+			<div class="col-lg-3 col-md-3 col-sm-3">
+				<h1 class="small">Rekindeling<br>collective memory</h1>
+				<h1 class="sub">UNESCO world heritage sites</h1>
+			</div>
+			<div class="col-lg-3 col-md-s col-sm-3">			
+				<a href="#" id = "MapBtn" class="btn">Map</a>
+			</div>
+			<div class="col-lg-3 col-md-s col-sm-3">		
+				<a href="TimeSeries.html" id = "TimeBtn" class="btn">Histogram</a>
+			</div>
+			<div class="col-lg-3 col-md-s col-sm-3">		
+				<a href = "palmyra.html" id = "CaseBtn" class="btn">Case Study</a> 
+<!-- 					<a href = "#" id = "DangerBtn" class="btn">Danger</a> 
+						<a href = "#" id = "TotalBtn" class="btn">Total</a>  -->
+			</div>
+		</div>
+		<div class="row right">
+			<div class="col-lg-3 col-md-3 col-sm-4 righttext">
 
-		<div class="leftBar">
-			<div class="fixed-block">
-				<div class="head-block">
-					<h1>Rekindeling<br> collective memory</h1>
-					<h2>UNESCO world heritage sites</h2>
-				</div>
-				<div class="btn-block">
-					<a href="#" id = "TotalBtn" class="btn">Total Sites</a> 
-					<a href="#" id = "DangerBtn" class="btn">Sites In Danger</a> 
-				</div>
+
 				<div class="text-block">	
-					<p>Ranking by country that is hosting the site. Select the country you want to highlight</p>
-				</div>
+					<p class="list">Total Sites Per Country.<br> Select country to explore.</p>
+				
 				<div class="scroll-block">	
 					<div class="country-list"></div>
 				</div>
-				<div class="bottom-bar">
-					<a href = "palmyra.html">Case Study</a>
 				</div>
-			</div><!-- //fixed -->
-
-
-		</div>
-        <div class="rightBar">
-			<div class="map"></div>
-			<div class="site_gallery">
-				<div class="site_img"></div>
-				<div class="site_text"><h2></h2><br><p></p></div>
 			</div>
-			<!-- <div class="site_text"><h2></h2><p></p></div> -->
+
+
+
+        	<div class="col-lg-9 col-md-9 col-sm-8 rightmap">
+				<div class="map"></div>
+	
+				<div class="site_text"><h2></h2><br><p class="list"></p></div>
+				<div class="site_img"></div>
+			</div>
 		</div>
 	</section>
 </div>
 
 		<!-- Scripts -->
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.6/d3.min.js" charset="utf-8"></script>
+				<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
 		<script src="lib/queue/queue.min.js"></script>
 		<script src="lib/jquery-1.11.1.min.js"></script>
 		<script src="lib/crossfilter/crossfilter.js"></script>
 		<script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
 		<script src="http://d3js.org/topojson.v1.min.js"></script>
-		<script src="mapDanger/script10.js"></script>
+		<script src="mapDanger/script12.js"></script>
 	<!-- 	<script src="code_drafts/filtering_map_scripts/script_filtering.js"></script> -->
 
 	</body>
