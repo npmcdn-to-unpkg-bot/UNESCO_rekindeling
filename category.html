@@ -20,7 +20,7 @@
 				<h1 class="sub">UNESCO world heritage sites</h1>
 			</div>
 			<div class="col-lg-3 col-md-s col-sm-3">			
-				<a href="#" id = "MapBtn" class="btn">Map</a>
+				<a href="index.html" id = "MapBtn" class="btn">Map</a>
 			</div>
 			<div class="col-lg-3 col-md-s col-sm-3">		
 				<!-- <a href="TimeSeries.html" id = "TimeBtn" class="btn">Histogram</a> -->
@@ -32,7 +32,7 @@
 		</div>
 
 
-		<section class="section" id="section-map">
+<!-- 		<section class="section" id="section-map">
 		<div class="row body">
 			<div class="col-lg-3 col-md-3 col-sm-4 righttext">
 
@@ -55,8 +55,31 @@
 				<div class="site_img"></div>
 			</div>
 		</div>
-		</section>
+		</section> -->
+		<section class="section" id="section-category">
+		<div class="row body">
+			<div class="col-lg-3 col-md-3 col-sm-4 righttext">
 
+
+				<div class="text-block">	
+					<p class="list">Total Sites Per Country.<br> Select country to explore.</p>
+				
+				<div class="scroll-block">	
+					<div class="country-list"></div>
+				</div>
+				</div>
+			</div>
+
+
+
+        	<div class="col-lg-9 col-md-9 col-sm-8 rightmap">
+				<div class="category_canvas"></div>
+	
+				<div class="site_text"><h2></h2><br><p class="list"></p></div>
+				<div class="site_img"></div>
+			</div>
+		</div>
+		</section>
 
 	</section>
 </div>
@@ -65,11 +88,11 @@
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.6/d3.min.js" charset="utf-8"></script>
 		<script src="lib/queue/queue.min.js"></script>
 		<script src="lib/jquery-1.11.1.min.js"></script>
-		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>		
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
 		<script src="lib/crossfilter/crossfilter.js"></script>
 		<script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
 		<script src="http://d3js.org/topojson.v1.min.js"></script>
-		<script src="Map/script1.js"></script>
+		<script src="Category/script3.js"></script>
 
 	</body>
 </html>
