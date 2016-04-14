@@ -12,14 +12,42 @@ var category_canvas = d3.select('.category_canvas')
     .append('g')
     .attr('transform',"translate("+margin.l+","+margin.t+")");
 
-var color =  d3.scale.ordinal().domain([0, 2]).range(["#2B5189","#DD5846","#91A357"]);
+var color =  d3.scale.ordinal().domain([0, 2]).range(["#2B5189","#91A357","#DD5846"]);
     //cultural: green, natural: red, mixed:blue
+
+  //  blue 2B5189
+  //  red DD5846
+  //  green 91A357
 var force = d3.layout.force().size([width,height]).charge(-1).gravity(0);
 
-var scaleR = d3.scale.sqrt().range([5,100]).domain([0,70000000]);
 
+//Multiple foci
+var foci = {};
+foci.c = {
+    x: width*.8,
+    y: height/2
+};
+foci.n = {
+    x: width*.5,
+    y: height/2
+};
+
+
+
+foci.m = {
+    x: width*.15,
+    y: height/2
+};
+
+
+var titles = category_canvas.append("text").text("Cultural");
+
+
+var scaleR = d3.scale.sqrt().range([5,100]);
+var scaleX = d3.scale.linear().range([0, width]);
 var countryli, siteNodes, SitesByCountry, CountryInDanger;
-
+var maxRadius = 100;
+var m = 3; //number of clusters
 var centroidCountry = d3.map();
 countCountry = d3.map();
 countCountrySorted = d3.map();
@@ -67,13 +95,8 @@ function DataLoaded(err, worldMap_, Sites_){
     Sites_.forEach(function(d) {
       CountryLookup.set(d.country_id, d.country)
     })
-// Sites_.push{
-//   r:5
-// }
-
 
    setup(worldMap_, Sites_)
-
 
 }//DataLoaded
 ///////////////////////////////////////////////////////////////////setup data
@@ -108,24 +131,24 @@ function setup(worldMap_, Data){
 /////////////////////////////////////////////////////////////////////////////////////////draw map
 function draw(Data){
 
-var nodes = category_canvas.selectAll('.nodes')
+scaleX.domain(d3.extent(Data, function(d) { return d.area; }));
+scaleR.domain(d3.extent(Data, function(d) { return d.area; }));
+
+
+var nodes = category_canvas.selectAll('.area_nodes')
         .data(Data)
-    // .data(data.filter(function(d){ return d.time == "inWar"}));
 nodesEnter = nodes.enter()
     .append('rect')
-    .attr('opacity', .5)
- //   .attr('class', function(d){ return d.time})
-    .classed('nodes', true)
+    .attr('opacity', .7)
+    .attr("class", function(d){ return d.country + d.category})
+    .classed('area_nodes', true)
+    .classed('country', true)
     .attr('x',function(d){return d.x})
     .attr('y',function(d){return d.y})
-    .attr('width', function(d){
-      return scaleR(d.area)
-    })
-    .attr('height', function(d){
-      return scaleR(d.area)
-    })
+    .attr('width', function(d){ return scaleR(d.area) })
+    .attr('height', function(d){ return scaleR(d.area) })
      .style("fill", function(d) { return color(d.category);})
-     .attr("class", function(d){ return d.category})
+
 nodes.exit().remove()
 
 force.nodes(Data)
@@ -142,9 +165,16 @@ function onForceTick(e){
     }
  nodes
         .each(function(d){
-        var focus = {};
-           focus.x = width/2;
-           focus.y = height/2;
+        var focus;
+        if (d.category =="Cultural"){
+        var focus = foci.c;
+        }
+        else if (d.category == "Mixed"){
+        var focus = foci.n;
+        }
+        else {
+        var focus = foci.m;
+        }
             d.x += (focus.x-d.x)*(e.alpha*.1);
             d.y += (focus.y-d.y)*(e.alpha*.1);
         })
@@ -152,7 +182,7 @@ function onForceTick(e){
        .attr('x',function(d){return d.x})
 }
     function collide(dataPoint){
-var nr = (scaleR(dataPoint.area)/Math.sqrt(2))+ 1;
+    var nr = (scaleR(dataPoint.area)/Math.sqrt(2))+ 1;
           dataPoint.r = nr 
 
 // var r = scaleR(d.area);
@@ -195,22 +225,23 @@ var countryli_ul = d3.select(".country-list")
       .append('li')
       .attr('class', 'country-list')
       .classed('country', true)
-      .classed('lst', true)
       .text(function(d){ 
-        // d is country, countByCountry.get(d) is the 'value'
         return  countCountrySorted.get(d) + " " + CountryLookup.get(d);
       })
       .on('mouseover', function(d, i){
           dispatch.countryHover(d);
+          console.log(i)
       })
       .on('mouseleave', function(d, i){
           dispatch.countryLeave(d);
       })
       .on('click', function(d, i){
-        d3.selectAll('.site_nodes').classed('hover', false).classed('myactive', false)
+
+        d3.selectAll('.area_nodes').classed('hover', false).classed('myactive', false)
         d3.selectAll('.sites').classed('hide',true)
   
         dispatch.countryClick(d);
+
 
         var site_text= d3.select('.site_text');
           site_text.select('h2')
@@ -218,7 +249,6 @@ var countryli_ul = d3.select(".country-list")
           site_text.select('p')
               .html('');
       })
-
 
 
 ///////////////////////////////////////////toggle///////////////////
@@ -246,9 +276,10 @@ toggleItem(document.querySelectorAll('.country'));
 }
 
 dispatch.on('countryHover', function(countryName){
-   countrySelect = d3.selectAll('.site_nodes').filter(function(d){ 
-      return d.state == countryName
+   countrySelect = d3.selectAll('.area_nodes').filter(function(d){ 
+      return d.country == CountryLookup.get(countryName)
    })
+
    countrySelect.classed('hover', true)
     countryLiSelect = d3.selectAll('.country').filter(function(d){ 
       return d == countryName
@@ -258,8 +289,8 @@ dispatch.on('countryHover', function(countryName){
 });
 
 dispatch.on('countryLeave', function(countryName){
-    countrySelect = d3.selectAll('.country').filter(function(d){
-      return d.state == countryName;
+    countrySelect = d3.selectAll('.area_nodes').filter(function(d){
+      return d.country == CountryLookup.get(countryName);
     })
     countrySelect.classed('hover', false)
     countryLiSelect = d3.selectAll('.country').filter(function(d){ 
@@ -269,8 +300,8 @@ dispatch.on('countryLeave', function(countryName){
 });
 
 dispatch.on('countryClick', function(countryName){
-    countrySelect = d3.selectAll('.country').filter(function(d){
-      return d.state == countryName;
+    countrySelect = d3.selectAll('.area_nodes').filter(function(d){
+      return d.country == CountryLookup.get(countryName);
     })
     countrySelect.classed('myactive', true)
     countrySelectSite = d3.selectAll('.sites').filter(function(d){

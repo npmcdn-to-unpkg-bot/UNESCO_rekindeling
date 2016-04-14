@@ -198,12 +198,22 @@ li{
 .myactive{
     color:black;
     fill:black;
+    opacity:1;
+    stroke:black;
+    stroke-width:1px;
     font-family:'Lato-Regular';
 }
-
+.area_active{
+    opacity:1;
+    stroke:black;
+    stroke-width:1px;
+    font-family:'Lato-Regular';
+}
 .hover{
-  opacity:.6;
-  opacity:.6;
+
+  opacity:.45;
+/*  stroke:black;
+  stroke-width:1px;*/
 }
 /* ----------------------------------------------- IMAGE STYLING ------------------------------------*/
 .node_img{

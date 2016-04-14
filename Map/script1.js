@@ -292,6 +292,7 @@ toggleItem(document.querySelectorAll('.sites'));
 }
 
 dispatch.on('countryHover', function(countryName){
+
    countrySelect = d3.selectAll('.site_nodes').filter(function(d){ 
       return d.state == countryName
    })
@@ -304,7 +305,7 @@ dispatch.on('countryHover', function(countryName){
 });
 
 dispatch.on('countryLeave', function(countryName){
-    countrySelect = d3.selectAll('.country').filter(function(d){
+    countrySelect = d3.selectAll('.site_nodes').filter(function(d){
       return d.state == countryName;
     })
     countrySelect.classed('hover', false)
