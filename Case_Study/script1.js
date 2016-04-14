@@ -1,7 +1,7 @@
 
 var margin = {t:50,l:50,b:50,r:50},
-    width  = $('.gallery').width()-margin.l-margin.r,
-    height = $('.gallery').height()-margin.t-margin.b,
+    width  = $('.img_gallery').width()-margin.l-margin.r,
+    height = $('.img_gallery').height()-margin.t-margin.b,
     padding = 10;
 var force = d3.layout.force()
     .size([width,height])
@@ -19,12 +19,12 @@ function parseImage(d){
       r:10
         };
 }
- var gallery = d3.select(".gallery").append('svg').attr('width', width).attr('height', height);
+ var gallery = d3.select(".img_gallery").append('svg').attr('width', width).attr('height', height);
 
 function DataLoaded(err, beforeWar, inWar){
-
+console.log("hi")
     draw(inWar);
-
+console.log(inWar)
     d3.selectAll('.btn').on('click',function(){
        var type = d3.select(this).attr('id');
         if(type=='beforeWar'){

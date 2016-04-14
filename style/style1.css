@@ -54,7 +54,7 @@ text-transform: uppercase;
 
 }
 h2{ 
-    font-family:'Lato-Italic';
+    font-family:'Lato-Itc';
     font-size: 12pt;
     line-height:14.4px;
     }
@@ -201,13 +201,13 @@ li{
     opacity:1;
     stroke:black;
     stroke-width:1px;
-    font-family:'Lato-Regular';
+    font-family:'Lato-Reg';
 }
 .area_active{
     opacity:1;
     stroke:black;
     stroke-width:1px;
-    font-family:'Lato-Regular';
+    font-family:'Lato-Reg';
 }
 .hover{
 
@@ -224,6 +224,11 @@ li{
     width:100%;
     height:800px;
     position:fixed;
+}
+
+.img_canvas{
+    width:100%;
+    height:100%;
 }
 
 .grid-item { width: 200px; }

@@ -39,8 +39,10 @@ foci.m = {
     y: height/2
 };
 
+var totalCultural;// = $(".Cultural").length;
+var totalNatural;// = $(".Natural").length;
+var totalMixed;// = $(".Mixed").length;
 
-var titles = category_canvas.append("text").text("Cultural");
 
 
 var scaleR = d3.scale.sqrt().range([5,100]);
@@ -90,10 +92,11 @@ function DataLoaded(err, worldMap_, Sites_){
   //     return d.danger = 0;
   //   }
   // })
-
+  CategoryLookup= d3.map();
   CountryLookup = d3.map();
     Sites_.forEach(function(d) {
       CountryLookup.set(d.country_id, d.country)
+      CategoryLookup.set(d.unid, d.category)
     })
 
    setup(worldMap_, Sites_)
@@ -109,6 +112,9 @@ function setup(worldMap_, Data){
 
   SitesByCountry.values().forEach(function(eachCountry){
    // console.log(SitesByCountry.get(eachCountry.country_id).length);
+
+
+//eachCountry.length
     countCountry.set(eachCountry[0].country_id, eachCountry.length);
 
   ;})
@@ -136,18 +142,26 @@ scaleR.domain(d3.extent(Data, function(d) { return d.area; }));
 
 
 var nodes = category_canvas.selectAll('.area_nodes')
-        .data(Data)
+    .data(Data)
 nodesEnter = nodes.enter()
     .append('rect')
     .attr('opacity', .7)
-    .attr("class", function(d){ return d.country + d.category})
+    .attr("class", function(d){ return d.category})
     .classed('area_nodes', true)
-    .classed('country', true)
+    // .classed('country', true)
     .attr('x',function(d){return d.x})
     .attr('y',function(d){return d.y})
     .attr('width', function(d){ return scaleR(d.area) })
     .attr('height', function(d){ return scaleR(d.area) })
-     .style("fill", function(d) { return color(d.category);})
+    .style("fill", function(d) { return color(d.category);})
+
+
+
+
+
+ // var ttotalCultural = $(".Cultural myactive").length;
+ //   console.log("tc", ttotalCultural)
+
 
 nodes.exit().remove()
 
@@ -230,7 +244,7 @@ var countryli_ul = d3.select(".country-list")
       })
       .on('mouseover', function(d, i){
           dispatch.countryHover(d);
-          console.log(i)
+
       })
       .on('mouseleave', function(d, i){
           dispatch.countryLeave(d);
@@ -300,11 +314,25 @@ dispatch.on('countryLeave', function(countryName){
 dispatch.on('countryClick', function(countryName){
     countrySelect = d3.selectAll('.area_nodes').filter(function(d){
       return d.country == CountryLookup.get(countryName);
+
+
+
     })
     countrySelect.classed('myactive', true)
     countrySelectSite = d3.selectAll('.sites').filter(function(d){
       return d.country_id == countryName;
     })
     countrySelectSite.classed('hide', false)
+
+
+totalCultural = $(".Cultural.myactive").length;
+totalNatural = $(".Natural.myactive").length;
+totalMixed = $(".Mixed.myactive").length;
+console.log("tc", totalCultural, totalNatural, totalMixed)
+
+
+var titles = $('.category_text').select('h2')
+              .html("Natural"+" "+totalNatural+"     -     "+"Mixed"+" "+totalMixed+" "+" - "+"Cultural"+" "+totalCultural);
+
 });
 

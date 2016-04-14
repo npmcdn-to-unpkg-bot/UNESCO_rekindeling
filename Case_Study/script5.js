@@ -43,7 +43,6 @@ function DataLoaded(err, beforeWar, inWar){
 //--------------------------------------------------------------
 
 
-
 function draw(data){
 
 nodes = gallery.selectAll('.img')
@@ -58,11 +57,6 @@ nodesEnter = nodes
     .attr('y',function(d){return d.y})
     .attr('width', 200)
     .attr('height', 100);
-
-
-
-
-
 
         // .enter()
         // .append('g')
@@ -83,20 +77,6 @@ nodesEnter = nodes
         //         .attr('xlink:href',function(d){ return d.url });
         // })
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-console.log(data)
 //Collision detection
 force.nodes(data)
     .on('tick',onForceTick)
