@@ -13,11 +13,14 @@ var map = d3.select('.map')
     .attr('transform',"translate("+margin.l+","+margin.t+")");
 
 var projection = d3.geo.mercator().translate([width/2.5, height/1.7]).scale(130);
-    
 var path = d3.geo.path().projection(projection); 
 var force = d3.layout.force().size([width,height]).charge(-80).gravity(0);
-var scaleR = d3.scale.sqrt().range([0,50]).domain([0,53]);
-var SitesByCountry;
+var scaleCountry = d3.scale.sqrt().range([0,40]).domain([0,53]);
+var scaleArea = d3.scale.sqrt().range([6,100]);
+var color =  d3.scale.ordinal().domain([0, 2]).range(["#2B5189","#91A357","#DD5846"]);
+var colorDark =  d3.scale.ordinal().domain([0, 2]).range(["#2B5189","#91A357","#DD5846"]);
+var countryli, siteNodes, SitesByCountry;
+
 var centroidCountry = d3.map();
 countCountry = d3.map();
 countCountrySorted = d3.map();
@@ -43,13 +46,21 @@ function parseUnesco(d){
       'lng': +d.longitude,
       'desc': d.short_description_en,
       'url': d.url,
-      'country_id': d.udnp_code
+      'country_id': d.udnp_code,
+      'area':+d.area_hectares,
   };
 }
 
 
 function DataLoaded(err, worldMap_, Sites_){
-
+  Sites_.forEach(function(d){
+    if (d.danger != undefined) {
+      return d.danger = 1;
+    }
+    else {
+      return d.danger = 0;
+    }
+  })
 
   CountryLookup = d3.map();
     Sites_.forEach(function(d) {
@@ -57,6 +68,22 @@ function DataLoaded(err, worldMap_, Sites_){
     })
 
 
+var filterDanger_ = Sites_.filter(function(d){ return d.danger == 1})
+var filterCultural_ = Sites_.filter(function(d){ return d.category == "Mixed"})
+
+
+    $('#DangerBtn').on('click',function(d){
+        d.preventDefault();
+        d3.selectAll(".site_nodes").remove();
+        setup(worldMap_, filterDanger_);
+    });
+
+    $('#TotalBtn').on('click',function(d){
+        d.preventDefault();
+        d3.selectAll(".site_nodes").remove();
+        setup(worldMap_, Sites_)
+        console.log('click');
+    });
    setup(worldMap_, Sites_)
 
 
@@ -103,21 +130,21 @@ function setup(worldMap_, Data){
   countCountryKey.forEach(function(cntry){
     countCountrySorted.set(cntry, countCountry.get(cntry))
   })
-  appendCountryList(countCountrySorted); 
-  draw(center);
-  appendSiteGallery(Data);
+  appendCountryList(countCountrySorted);
+  drawCountries(center);
+  drawSiteGallery(Data);
 
 }//setup
 /////////////////////////////////////////////////////////////////////////////////////////end setup
 /////////////////////////////////////////////////////////////////////////////////////////draw map
-function draw(center){
+function drawCountries(center){
 
-      var nodes =map.selectAll('.country_nodes')
+      var nodes =map.selectAll('.site_n')
             .data(center, function(d){return d.state})
         var nodesEnter = nodes.enter()
             .append('g')
             .attr('opacity', 0)
-            .attr('class','country_nodes');      
+            .attr('class','site_nodes');      
      
         nodes
             .attr('transform',function(d){ return 'translate('+d.x+','+d.y+')';})
@@ -132,11 +159,16 @@ function draw(center){
             .attr('x', function(d){ return 0 })
             .attr('y', function(d){ return 0 })
                 .attr("width", function(d){
+                  //get array of sites for this country
+                  //stiesByCountry.get(d.id) --> array of all sites
+                  //now you need count of ??? (all, endangered, or cultural)
+                  //all --> sites.length
+                  //endanger --> sites.filter(...) --> array --> array.length
                   var values = countCountrySorted.get(d.state);
-                  if (values>=0) {return scaleR(values); } else { return scaleR(0);}
+                  if (values>=0) {return scaleCountry(values); } else { return scaleCountry(0);}
                   })
                    .attr("height", function(d){var values = countCountrySorted.get(d.state);
-                  if (values>=0) { return scaleR(values); } else { return scaleR(0); }              
+                  if (values>=0) { return scaleCountry(values); } else { return scaleCountry(0); }              
                   })
            .on('mouseover', function(d, i){
               dispatch.countryHover(d);
@@ -162,9 +194,6 @@ function draw(center){
             .attr('transform',function(d){
                 return 'translate('+d.x+','+d.y+')';
             })
-
-            // .attr('cx', function(d){ return d.x})
-            // .attr('cy', function(d){ return d.y})
 //---------------------------------------custom gravity: data points gravitate towards a straight line
         function gravity(k){
             return function(d){
@@ -172,17 +201,11 @@ function draw(center){
                 d.x += (d.x0 - d.x)*k;
             }
         } //gravity
-        function collide(dataPoint, Sites_){
-// console.log(dataPoint, center)
-console.log(countCountrySorted)
-         var values = countCountrySorted.get(dataPoint.state);
-         console.log('v',values)
-// var values = 5;
-          if (values>=0) {
+        function collide(dataPoint, center){
 
-            var nr = (scaleR(values)/Math.sqrt(2))+ padding} else {var nr = scaleR(0)+ 10;}
-          
-          // var nr = (scaleR(dataPoint.area)/Math.sqrt(2))+ 1;
+       //   var values = countCountrySorted.get(dataPoint.state);
+var values = 5;
+          if (values>=0) { var nr = (scaleR(values)/Math.sqrt(2))+ padding} else {var nr = scaleR(0)+ padding;}
           dataPoint.r = nr 
             var nx1 = dataPoint.x - nr,
                 ny1 = dataPoint.y - nr,
@@ -197,10 +220,10 @@ console.log(countCountrySorted)
                         r = nr + quadPoint.point.r + padding;
                     if(l<r){
                         l = (l-r)/l*.1;
-                        dataPoint.x -= x*= (l*.02);
-                        dataPoint.y -= y*= (l*.02);
-                        quadPoint.point.x += (x*.02);
-                        quadPoint.point.y += (y*.02);
+                        dataPoint.x -= x*= (l*.05);
+                        dataPoint.y -= y*= (l*.05);
+                        quadPoint.point.x += (x*.25);
+                        quadPoint.point.y += (y*.05);
                     }
                 }
                 return x1>nx2 || x2<nx1 || y1>ny2 || y2<ny1;
@@ -214,7 +237,7 @@ function appendCountryList(Data){
 
 var countryli_ul = d3.select(".country-list")
       .append('ul');
- var countryli = countryli_ul
+    countryli = countryli_ul
       .selectAll('li')
       .data(countCountrySorted.keys())
       .enter()
@@ -269,13 +292,201 @@ function toggleItem(elem) {
 }
 toggleItem(document.querySelectorAll('.country'));
 toggleItem(document.querySelectorAll('.sites'));
-toggleItem(document.querySelectorAll('.country_nodes'));
 ///////////////////////////////////////////toggle end////////////////
 }
 
+
+
+//////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////
+
+
+d3.select('.site_text').classed('hide', true);
+
+var category_canvas = d3.select('.category_canvas')
+    .append('svg')
+    .attr('width',width+margin.l+margin.r)
+    .attr('height',height+margin.t+margin.b)
+    .append('g')
+    .attr('transform',"translate("+margin.l+","+margin.t+")");
+
+
+    //cultural: green, natural: red, mixed:blue
+
+  //  blue 2B5189
+  //  red DD5846
+  //  green 91A357
+var force = d3.layout.force().size([width,height]).charge(-1).gravity(0);
+
+
+//Multiple foci
+var foci = {};
+foci.c = {
+    x: width*.8,
+    y: height/2
+};
+foci.n = {
+    x: width*.5,
+    y: height/2
+};
+
+
+
+foci.m = {
+    x: width*.15,
+    y: height/2
+};
+
+
+
+
+
+function drawSites(Data){
+
+scaleX.domain(d3.extent(Data, function(d) { return d.area; }));
+scaleR.domain(d3.extent(Data, function(d) { return d.area; }));
+
+
+var nodes = category_canvas.selectAll('.area_nodes')
+    .data(Data)
+nodesEnter = nodes.enter()
+    .append('rect')
+    .attr('opacity', .5)
+    .attr("class", function(d){ return d.category})
+    .classed('area_nodes', true)
+    // .classed('country', true)
+    .attr('x',function(d){return d.x})
+    .attr('y',function(d){return d.y})
+    .attr('width', function(d){ return scaleR(d.area) })
+    .attr('height', function(d){ return scaleR(d.area) })
+    .style("fill", function(d) { return color(d.category);})
+
+
+
+
+
+ // var ttotalCultural = $(".Cultural myactive").length;
+ //   console.log("tc", ttotalCultural)
+
+
+nodes.exit().remove()
+
+force.nodes(Data)
+    .on('tick',onForceTick)
+    .start();
+
+function onForceTick(e){
+    var q = d3.geom.quadtree(Data),
+        i = 0,
+        n = Data.length;
+
+    while( ++i<n ){
+        q.visit(collide(Data[i]));
+    }
+ nodes
+        .each(function(d){
+        var focus;
+        if (d.category =="Cultural"){
+        var focus = foci.c;
+        }
+        else if (d.category == "Mixed"){
+        var focus = foci.n;
+        }
+        else {
+        var focus = foci.m;
+        }
+            d.x += (focus.x-d.x)*(e.alpha*.1);
+            d.y += (focus.y-d.y)*(e.alpha*.1);
+        })
+       .attr('y',function(d){return d.y})
+       .attr('x',function(d){return d.x})
+}
+    function collide(dataPoint){
+    var nr = (scaleR(dataPoint.area)/Math.sqrt(2))+ 1;
+          dataPoint.r = nr 
+
+// var r = scaleR(d.area);
+
+        var nr = dataPoint.r + 1,
+            nx1 = dataPoint.x - nr,
+            ny1 = dataPoint.y - nr,
+            nx2 = dataPoint.x + nr,
+            ny2 = dataPoint.y + nr;
+
+        return function(quadPoint,x1,y1,x2,y2){
+            if(quadPoint.point && (quadPoint.point !== dataPoint)){
+                var x = dataPoint.x - quadPoint.point.x,
+                    y = dataPoint.y - quadPoint.point.y,
+                    l = Math.sqrt(x*x+y*y),
+                    r = nr + quadPoint.point.r;
+                if(l<r){
+                    l = (l-r)/l*.1;
+                    dataPoint.x -= x*= (l);
+                    dataPoint.y -= y*= l;
+                    quadPoint.point.x += (x);
+                    quadPoint.point.y += y;
+                }
+            }
+            return x1>nx2 || x2<nx1 || y1>ny2 || y2<ny1;
+        }
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 dispatch.on('countryHover', function(countryName){
 
-   countrySelect = d3.selectAll('.country_nodes').filter(function(d){ 
+   countrySelect = d3.selectAll('.site_nodes').filter(function(d){ 
       return d.state == countryName
    })
    countrySelect.classed('hover', true)
@@ -287,7 +498,7 @@ dispatch.on('countryHover', function(countryName){
 });
 
 dispatch.on('countryLeave', function(countryName){
-    countrySelect = d3.selectAll('.country_nodes').filter(function(d){
+    countrySelect = d3.selectAll('.site_nodes').filter(function(d){
       return d.state == countryName;
     })
     countrySelect.classed('hover', false)

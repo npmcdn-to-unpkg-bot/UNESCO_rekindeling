@@ -70,6 +70,7 @@ li{
     font-family:'Lato-Thin';
     font-size: 9.5pt;
     line-height:20px;
+    color:rgb(140, 140, 140);
 }
 .list{
     list-style: none;
@@ -141,6 +142,15 @@ li{
     width:100%;
     height: 100%;
 }
+.danger_canvas{
+    position: absolute;
+    width:100%;
+    height: 100%;
+    overflow-y:scroll;
+}
+
+
+/*---------------------------------site gallery and images and info */
 .site_text h2, .site_text p{
     width:60%;
     margin:auto;
@@ -175,20 +185,17 @@ li{
     clip-path: rect(10px, 20px, 30px, 40px);
 }
 
-/*------------svg-----------------*/
-.canvas .node{
-    fill: red;
-    stroke: #fff;
-    stroke-width:1.5px;
+/*------------------------------------------------time line-----------------------------------------*/
+
+.index-lines{
+    stroke:black;
+    stroke-width:5px;
+    opacity:.3;
 }
-.lst{
-    color:rgb(140, 140, 140);
-}
-.canvas .link{
-    fill:none;
-    stroke:white;
-    stroke-width:1px;
-    opacity:.03;
+.lines{
+    stroke:black;
+    stroke-width:5px;
+    opacity:.6;
 }
 /* ----------------------------------------------- SELECTIONS ------------------------------------*/
 .hide{
@@ -200,8 +207,14 @@ li{
     fill:black;
     opacity:1;
     stroke:black;
-    stroke-width:1px;
+    stroke-width:.1px;
     font-family:'Lato-Reg';
+}
+
+.lines.myactive{
+    stroke:black;
+    opacity:1;
+    stroke-width:7px;
 }
 .area_active{
     opacity:1;
@@ -210,15 +223,11 @@ li{
     font-family:'Lato-Reg';
 }
 .hover{
-
   opacity:.45;
-/*  stroke:black;
-  stroke-width:1px;*/
 }
 /* ----------------------------------------------- IMAGE STYLING ------------------------------------*/
 .node_img{
     clip-path: rect(10px, 20px, 30px, 40px);
-
 }
 .gallery{
     width:100%;
@@ -231,7 +240,7 @@ li{
     height:100%;
 }
 
-.grid-item { width: 200px; }
+.grid-item { height: 100px; }
 .grid{
     width:100%;
     height:700px;

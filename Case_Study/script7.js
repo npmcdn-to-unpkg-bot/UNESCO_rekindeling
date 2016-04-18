@@ -17,7 +17,8 @@ queue()
 function parseImage(d){ 
     return { 
       'url': d.rgi_image,
-      r:10
+      r:10,
+      id:+d.index
         };
 }
 var   gallery = d3.select(".img_gallery").append('svg').attr('width', width).attr('height', height);
@@ -53,6 +54,7 @@ nodesEnter = nodes
     .enter()
     .append('circle')
     .attr('class', 'nodes')
+    .attr('id', function(d){ return d.id})
    // .attr("xlink:href", function(d){ return d.url })
     .attr('cx',function(d){return d.x})
     .attr('cy',function(d){return d.y})

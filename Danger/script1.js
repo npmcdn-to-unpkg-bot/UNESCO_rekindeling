@@ -1,11 +1,11 @@
 var margin = {t:50,l:50,b:50,r:50},
-    width  = $('.category_canvas').width()-margin.l-margin.r,
-    height = $('.category_canvas').height()-margin.t-margin.b,
+    width  = $('.danger_canvas').width()-margin.l-margin.r,
+    height = $('.danger_canvas').height()-margin.t-margin.b,
     padding = 10;
 
 d3.select('.site_text').classed('hide', true);
 
-var category_canvas = d3.select('.category_canvas')
+var danger_canvas = d3.select('.danger_canvas')
     .append('svg')
     .attr('width',width+margin.l+margin.r)
     .attr('height',height+margin.t+margin.b)
@@ -14,27 +14,31 @@ var category_canvas = d3.select('.category_canvas')
 
 var color =  d3.scale.ordinal().domain([0, 2]).range(["#2B5189","#91A357","#DD5846"]);
 var colorDark =  d3.scale.ordinal().domain([0, 2]).range(["#2B5189","#91A357","#DD5846"]);
- //  blue 2B5189  red DD5846  green 91A357
-var force = d3.layout.force().size([width,height]).charge(-1).gravity(0);
 
-var foci = {};
-foci.c = { x: width*.8, y: height/2 };
-foci.n = { x: width*.5, y: height/2 };
-foci.m = { x: width*.15, y: height/2 };
+    //cultural: green, natural: red, mixed:blue
+  //  blue 2B5189
+  //  red DD5846
+  //  green 91A357
 
-var totalCultural, totalNatural, totalMixed;
+var totalCultural;// = $(".Cultural").length;
+var totalNatural;// = $(".Natural").length;
+var totalMixed;// = $(".Mixed").length;
 
-var scaleR = d3.scale.sqrt().range([6,100]);
-var scaleX = d3.scale.linear().range([0, width]);
-var SitesByCountry;
-var centroidCountry = d3.map();
+var parseDate = d3.time.format("%Y").parse;
+
+var scaleX = d3.time.scale().range([0, width]);
+var scaleY = d3.scale.linear().domain([1, 42]).range([0, height]);
 countCountry = d3.map();
 countCountrySorted = d3.map();
+var SitesByCountry;
+// var centroidCountry = d3.map();
+// countCountry = d3.map();
+// countCountrySorted = d3.map();
 
 //------------------------------------------------------------------------load data     
 queue()
       .defer(d3.json, "data/countries.geo.json")
-      .defer(d3.csv, "data/UNESCO2.csv", parseUnesco)
+      .defer(d3.csv, "data/UNESCO_danger2.csv", parseUnesco)
       .await(DataLoaded)
 
 var dispatch = d3.dispatch('countryHover', 'countryLeave', 'countryClick');
@@ -44,7 +48,6 @@ function parseUnesco(d){
       'name':(d["name_en"] == " " ? undefined: d["name_en"]),
       'category': (d["category"] == " " ? undefined: d["category"]),
       'country': (d["states_name_en"] == " " ? undefined: d["states_name_en"]),
-      'danger': (+d["danger_start1"] == " " ? undefined: +d["danger_start1"]),
       'region': d.region_name_en,
       'date': d.date_inscribed,
       'unid': +d.unique_number,
@@ -54,6 +57,9 @@ function parseUnesco(d){
       'url': d.url,
       'country_id': d.udnp_code,
       'area':+d.area_hectares,
+      start: +d.danger_start,
+      end: +d.danger_end,
+      index:+d.index,
       r:10
 
   };
@@ -61,13 +67,18 @@ function parseUnesco(d){
 
 
 function DataLoaded(err, worldMap_, Sites_){
+Sites_.forEach(function(d){ 
+  var start_year = new Date(d.start);
+  var end_year = new Date(d.end);
+
+  d.start_year = start_year;
+  d.end_year = end_year;
+})
 
   CountryLookup = d3.map();
     Sites_.forEach(function(d) {
       CountryLookup.set(d.country_id, d.country)
-
     })
-
    setup(worldMap_, Sites_)
 
 }//DataLoaded
@@ -78,7 +89,12 @@ function setup(worldMap_, Data){
           .key(function (d) { return d.country_id; })
           .map(Data, d3.map);
 
+
   SitesByCountry.values().forEach(function(eachCountry){
+   // console.log(SitesByCountry.get(eachCountry.country_id).length);
+
+
+//eachCountry.length
     countCountry.set(eachCountry[0].country_id, eachCountry.length);
 
   ;})
@@ -90,102 +106,98 @@ function setup(worldMap_, Data){
   countCountryKey.forEach(function(cntry){
     countCountrySorted.set(cntry, countCountry.get(cntry))
   })
-
+  // RectList(Data); 
   appendCountryList(countCountrySorted); 
-  draw(Data);
-  // appendSiteGallery(Data);
+  TimeLine(Data);
 }//setup
-/////////////////////////////////////////////////////////////////////////////////////////end setup
-/////////////////////////////////////////////////////////////////////////////////////////draw map
-function draw(Data){
-
-scaleX.domain(d3.extent(Data, function(d) { return d.area; }));
-scaleR.domain(d3.extent(Data, function(d) { return d.area; }));
 
 
-var nodes = category_canvas.selectAll('.area_nodes')
-    .data(Data)
-nodesEnter = nodes.enter()
-    .append('rect')
-    .attr('opacity', .5)
-    .attr("class", function(d){ return d.category})
-    .classed('area_nodes', true)
-    // .classed('country', true)
-    .attr('x',function(d){return d.x})
-    .attr('y',function(d){return d.y})
-    .attr('width', function(d){ return scaleR(d.area) })
-    .attr('height', function(d){ return scaleR(d.area) })
-    .style("fill", function(d) { return color(d.category);})
+// function RectList(Data){
+// console.log(Data);
+// var nodes = danger_canvas.selectAll('.danger_nodes')
+//     .data(Data)
+// nodesEnter = nodes.enter()
+//     .append('rect')
+//     .attr('opacity', 1)
+//     .attr("class", function(d){ return d.category })
+//     .classed('danger_nodes', true)
+//     .attr('x', 100)
+//     .attr('y',function(d){return scaleY(d.index) })
+//     .attr('width', 5)
+//     .attr('height', 5)
+//     .style("fill", function(d) { return color(d.category);})
 
-nodes.exit().remove()
+// nodes.exit().remove()
 
-force.nodes(Data)
-    .on('tick',onForceTick)
-    .start();
+// }
 
-function onForceTick(e){
-    var q = d3.geom.quadtree(Data),
-        i = 0,
-        n = Data.length;
+function TimeLine(Data){
 
-    while( ++i<n ){
-        q.visit(collide(Data[i]));
-    }
- nodes
-        .each(function(d){
-          var focus;
-          if (d.category =="Cultural"){ var focus = foci.c; }
-          else if (d.category == "Mixed"){  var focus = foci.n; }
-          else { var focus = foci.m; }
-            d.x += (focus.x-d.x)*(e.alpha*.1);
-            d.y += (focus.y-d.y)*(e.alpha*.1);
-        })
-       .attr('y',function(d){return d.y})
-       .attr('x',function(d){return d.x})
-}
-    function collide(dataPoint){
-    var nr = (scaleR(dataPoint.area)/Math.sqrt(2))+ 1;
-          dataPoint.r = nr 
 
-        var nr = dataPoint.r + 1,
-            nx1 = dataPoint.x - nr,
-            ny1 = dataPoint.y - nr,
-            nx2 = dataPoint.x + nr,
-            ny2 = dataPoint.y + nr;
+var minYear = d3.min(Data, function(d){ return d.start_year})
+var maxYear = d3.max(Data, function(d){ return d.end_year})
 
-        return function(quadPoint,x1,y1,x2,y2){
-            if(quadPoint.point && (quadPoint.point !== dataPoint)){
-                var x = dataPoint.x - quadPoint.point.x,
-                    y = dataPoint.y - quadPoint.point.y,
-                    l = Math.sqrt(x*x+y*y),
-                    r = nr + quadPoint.point.r;
-                if(l<r){
-                    l = (l-r)/l*.1;
-                    dataPoint.x -= x*= (l);
-                    dataPoint.y -= y*= l;
-                    quadPoint.point.x += (x);
-                    quadPoint.point.y += y;
-                }
-            }
-            return x1>nx2 || x2<nx1 || y1>ny2 || y2<ny1;
-        }
-    }
+scaleX.domain([minYear, maxYear])
+var index_lines = danger_canvas.selectAll(".lines")
+      .data(Data)
+      indexLinesEnter = index_lines.enter()
+      .append('line')
+      .attr('x1', 0 )
+      .attr('x2', width )
+      .attr('y1', function(d){ return scaleY(d.index) })
+      .attr('y2', function(d){ return scaleY(d.index) })
+      .style("stroke", "#e2e2e2")
+      .classed('index-lines', true); 
+
+
+var lines = danger_canvas.selectAll(".timelines")
+      .data(Data)
+      linesEnter = lines.enter()
+      .append('line')
+      .attr('x1', function(d){ return scaleX(d.start_year) })
+      .attr('x2', function(d){ return scaleX(d.end_year) })
+      .attr('y1', function(d){ return scaleY(d.index) })
+      .attr('y2', function(d){ return scaleY(d.index) })
+      .attr('class', function(d){ return d.index})
+      .classed('lines', true);
+
+
+      // .on('mouseover', function(d, i){
+      //     dispatch.countryHover(d);
+
+      // })
+      // .on('mouseleave', function(d, i){
+      //     dispatch.countryLeave(d);
+      // })
+      // .on('click', function(d, i){
+
+      //   d3.selectAll('.area_nodes').classed('hover', false).classed('myactive', false)
+      //   d3.selectAll('.sites').classed('hide',true)
+  
+      //   dispatch.countryClick(d);
+
+      //   var site_text= d3.select('.site_text');
+      //     site_text.select('h2')
+      //         .html('');   
+      //     site_text.select('p')
+      //         .html('');
+      // })
+
 }
 
-////////////////////////////////////////////////////////////////////////////////////////////////////end draw map
-////////////////////////////////////////////////////////////////////////////////////////////////////append List
+
+
 function appendCountryList(Data){
 
 var countryli_ul = d3.select(".country-list")
       .append('ul');
-   var countryli = countryli_ul
+    countryli = countryli_ul
       .selectAll('li')
       .data(countCountrySorted.keys())
       .enter()
       .append('li')
       .attr('class', 'country-list')
       .classed('country', true)
-        .classed('lst', true)
       .text(function(d){ 
         return  countCountrySorted.get(d) + " " + CountryLookup.get(d);
       })
@@ -203,12 +215,15 @@ var countryli_ul = d3.select(".country-list")
   
         dispatch.countryClick(d);
 
+
         var site_text= d3.select('.site_text');
           site_text.select('h2')
               .html('');   
           site_text.select('p')
               .html('');
       })
+
+
 ///////////////////////////////////////////toggle///////////////////
 function toggleItem(elem) {
   for (var i = 0; i < elem.length; i++) {
