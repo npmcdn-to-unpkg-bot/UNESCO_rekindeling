@@ -1,33 +1,42 @@
 var margin = {t:50,l:50,b:50,r:50},
-    width  = $('.category_canvas').width()-margin.l-margin.r,
-    height = $('.category_canvas').height()-margin.t-margin.b,
+    width  = $('.canvas').width()-margin.l-margin.r,
+    height = $('.canvas').height()-margin.t-margin.b,
     padding = 10;
 
 d3.select('.site_text').classed('hide', true);
 
-var category_canvas = d3.select('.category_canvas')
+var category_canvas = d3.select('.canvas')
     .append('svg')
     .attr('width',width+margin.l+margin.r)
     .attr('height',height+margin.t+margin.b)
     .append('g')
     .attr('transform',"translate("+margin.l+","+margin.t+")");
 
-var color =  d3.scale.ordinal().domain([0, 2]).range(["#2B5189","#DD5846","#91A357"]);
-    //cultural: green, natural: red, mixed:blue
+var color = d3.scale.ordinal()
+    .domain(["Cultural", "Natural", "Mixed"])
+    .range(["#fdb913", "#00addc", "7fb378"]);
+
 var force = d3.layout.force().size([width,height]).charge(-1).gravity(0);
 
-var scaleR = d3.scale.sqrt().range([5,100]).domain([0,70000000]);
-
-var countryli, siteNodes, SitesByCountry, CountryInDanger;
-
+var scaleX = d3.scale.linear().range([width/5, width]);
+var SitesByCountry;
 var centroidCountry = d3.map();
 countCountry = d3.map();
 countCountrySorted = d3.map();
 
+
+var xAxis = d3.svg.axis()
+  .scale(scaleX)
+  .orient('bottom')
+  .tickSubdivide(true)
+  .ticks(12);
+  // .tickFormat(d3.time.format("%d-%m-%Y"));;
+
+
 //------------------------------------------------------------------------load data     
 queue()
       .defer(d3.json, "data/countries.geo.json")
-      .defer(d3.csv, "data/UNESCO2.csv", parseUnesco)
+      .defer(d3.csv, "data/UNESCO_data.csv", parseUnesco)
       .await(DataLoaded)
 
 var dispatch = d3.dispatch('countryHover', 'countryLeave', 'countryClick');
@@ -47,33 +56,23 @@ function parseUnesco(d){
       'url': d.url,
       'country_id': d.udnp_code,
       'area':+d.area_hectares,
-      r:10
+      r:3,
+      y0:height/2
 
   };
 }
 
 
 function DataLoaded(err, worldMap_, Sites_){
-  // Sites_.forEach(function(d){
-  //   if (d.danger != undefined) {
-  //     return d.danger = 1;
-  //   }
-  //   else {
-  //     return d.danger = 0;
-  //   }
-  // })
 
   CountryLookup = d3.map();
     Sites_.forEach(function(d) {
       CountryLookup.set(d.country_id, d.country)
-    })
-// Sites_.push{
-//   r:5
-// }
 
+
+    })
 
    setup(worldMap_, Sites_)
-
 
 }//DataLoaded
 ///////////////////////////////////////////////////////////////////setup data
@@ -83,9 +82,7 @@ function setup(worldMap_, Data){
           .key(function (d) { return d.country_id; })
           .map(Data, d3.map);
 
-
   SitesByCountry.values().forEach(function(eachCountry){
-   // console.log(SitesByCountry.get(eachCountry.country_id).length);
     countCountry.set(eachCountry[0].country_id, eachCountry.length);
 
   ;})
@@ -98,8 +95,6 @@ function setup(worldMap_, Data){
     countCountrySorted.set(cntry, countCountry.get(cntry))
   })
 
-
-
   appendCountryList(countCountrySorted); 
   draw(Data);
   // appendSiteGallery(Data);
@@ -108,25 +103,49 @@ function setup(worldMap_, Data){
 /////////////////////////////////////////////////////////////////////////////////////////draw map
 function draw(Data){
 
-var nodes = category_canvas.selectAll('.nodes')
-        .data(Data)
-    // .data(data.filter(function(d){ return d.time == "inWar"}));
+scaleX.domain(d3.extent(Data, function(d) { return d.area; }));
+
+category_canvas.append('g')
+        .attr("class", "x axis")
+        .attr("transform", "translate(0," + (height+10) + ")")
+        .call(xAxis)
+
+
+
+
+
+var nodes = category_canvas.selectAll('.area_nodes')
+    .data(Data)
 nodesEnter = nodes.enter()
     .append('rect')
     .attr('opacity', .5)
- //   .attr('class', function(d){ return d.time})
-    .classed('nodes', true)
-    .attr('x',function(d){return d.x})
-    .attr('y',function(d){return d.y})
-    .attr('width', function(d){
-      return scaleR(d.area)
-    })
-    .attr('height', function(d){
-      return scaleR(d.area)
-    })
-     .style("fill", function(d) { return color(d.category);})
-     .attr("class", function(d){ return d.category})
+    .attr("class", function(d){ return d.category})
+    .classed('area_nodes', true)
+    // .attr('x',function(d){return d.x})
+    // .attr('y',function(d){return d.y})
+
+            .attr("transform", function(d) {
+            // console.log(d)
+            return "translate(" + scaleX(d.area) + "," + d.y0 + ")";
+            })
+    .attr('width',5)
+    .attr('height', 5)
+    .style("fill", function(d) { return color(d.category);})
+
 nodes.exit().remove()
+
+var totalCultural = $(".Cultural").length;
+var totalNatural = $(".Natural").length;
+var totalMixed = $(".Mixed").length;
+
+
+var titles = $('.cultural').select('span')
+              .html(totalCultural)
+              $('.mixed').select('span')
+              .html(totalMixed)
+              $('.natural').select('span')
+              .html(totalNatural);
+
 
 force.nodes(Data)
     .on('tick',onForceTick)
@@ -140,22 +159,35 @@ function onForceTick(e){
     while( ++i<n ){
         q.visit(collide(Data[i]));
     }
- nodes
-        .each(function(d){
-        var focus = {};
-           focus.x = width/2;
-           focus.y = height/2;
-            d.x += (focus.x-d.x)*(e.alpha*.1);
-            d.y += (focus.y-d.y)*(e.alpha*.1);
-        })
-       .attr('y',function(d){return d.y})
-       .attr('x',function(d){return d.x})
+      
+      nodes
+        .each(gravity(e.alpha*.05))
+        .attr("transform", function(d) {
+            return "translate(" + d.x + "," + d.y + ")";
+            })
+
+
+        function gravity(k){
+            //custom gravity: data points gravitate towards a straight line
+            return function(d){
+                var focus = {};
+                focus.x = scaleX(d.area);
+                focus.y = d.y0;
+                d.y += (focus.y - d.y)*k;
+                d.x += (focus.x - d.x)*k;
+            }
+        }   
+
+
+
+
+
+
+
 }
     function collide(dataPoint){
-var nr = (scaleR(dataPoint.area)/Math.sqrt(2))+ 1;
+    var nr = 5;
           dataPoint.r = nr 
-
-// var r = scaleR(d.area);
 
         var nr = dataPoint.r + 1,
             nx1 = dataPoint.x - nr,
@@ -171,9 +203,9 @@ var nr = (scaleR(dataPoint.area)/Math.sqrt(2))+ 1;
                     r = nr + quadPoint.point.r;
                 if(l<r){
                     l = (l-r)/l*.1;
-                    dataPoint.x -= x*= (l);
+                    dataPoint.x -= x*= l;
                     dataPoint.y -= y*= l;
-                    quadPoint.point.x += (x);
+                    quadPoint.point.x += x;
                     quadPoint.point.y += y;
                 }
             }
@@ -188,26 +220,27 @@ function appendCountryList(Data){
 
 var countryli_ul = d3.select(".country-list")
       .append('ul');
-    countryli = countryli_ul
+   var countryli = countryli_ul
       .selectAll('li')
       .data(countCountrySorted.keys())
       .enter()
       .append('li')
       .attr('class', 'country-list')
       .classed('country', true)
-      .classed('lst', true)
+        .classed('lst', true)
       .text(function(d){ 
-        // d is country, countByCountry.get(d) is the 'value'
         return  countCountrySorted.get(d) + " " + CountryLookup.get(d);
       })
       .on('mouseover', function(d, i){
           dispatch.countryHover(d);
+
       })
       .on('mouseleave', function(d, i){
           dispatch.countryLeave(d);
       })
       .on('click', function(d, i){
-        d3.selectAll('.site_nodes').classed('hover', false).classed('myactive', false)
+
+        d3.selectAll('.area_nodes').classed('hover', false).classed('myactive', false)
         d3.selectAll('.sites').classed('hide',true)
   
         dispatch.countryClick(d);
@@ -217,10 +250,8 @@ var countryli_ul = d3.select(".country-list")
               .html('');   
           site_text.select('p')
               .html('');
+
       })
-
-
-
 ///////////////////////////////////////////toggle///////////////////
 function toggleItem(elem) {
   for (var i = 0; i < elem.length; i++) {
@@ -246,9 +277,10 @@ toggleItem(document.querySelectorAll('.country'));
 }
 
 dispatch.on('countryHover', function(countryName){
-   countrySelect = d3.selectAll('.site_nodes').filter(function(d){ 
-      return d.state == countryName
+   countrySelect = d3.selectAll('.area_nodes').filter(function(d){ 
+      return d.country == CountryLookup.get(countryName)
    })
+
    countrySelect.classed('hover', true)
     countryLiSelect = d3.selectAll('.country').filter(function(d){ 
       return d == countryName
@@ -258,8 +290,8 @@ dispatch.on('countryHover', function(countryName){
 });
 
 dispatch.on('countryLeave', function(countryName){
-    countrySelect = d3.selectAll('.country').filter(function(d){
-      return d.state == countryName;
+    countrySelect = d3.selectAll('.area_nodes').filter(function(d){
+      return d.country == CountryLookup.get(countryName);
     })
     countrySelect.classed('hover', false)
     countryLiSelect = d3.selectAll('.country').filter(function(d){ 
@@ -269,13 +301,29 @@ dispatch.on('countryLeave', function(countryName){
 });
 
 dispatch.on('countryClick', function(countryName){
-    countrySelect = d3.selectAll('.country').filter(function(d){
-      return d.state == countryName;
+    countrySelect = d3.selectAll('.area_nodes').filter(function(d){
+      return d.country == CountryLookup.get(countryName);
+
+
+
     })
     countrySelect.classed('myactive', true)
     countrySelectSite = d3.selectAll('.sites').filter(function(d){
       return d.country_id == countryName;
     })
     countrySelectSite.classed('hide', false)
+
+var totalCultural = $(".Cultural.myactive").length;
+var totalNatural = $(".Natural.myactive").length;
+var totalMixed = $(".Mixed.myactive").length;
+
+
+var titles = $('.cultural').select('span')
+              .html(totalCultural)
+              $('.mixed').select('span')
+              .html(totalMixed)
+              $('.natural').select('span')
+              .html(totalNatural);
+
 });
 

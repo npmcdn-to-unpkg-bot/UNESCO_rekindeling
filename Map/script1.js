@@ -1,22 +1,22 @@
-var margin = {t:50,l:50,b:50,r:50},
-    width  = $('.map').width()-margin.l-margin.r,
-    height = $('.map').height()-margin.t-margin.b,
+var margin = {t:10,l:50,b:10,r:50},
+    width  = $('.canvas').width()-margin.l-margin.r,
+    height = $('.canvas').height()-margin.t-margin.b,
     padding = 10;
 
 d3.select('.site_text').classed('hide', true);
 
-var map = d3.select('.map')
+var map = d3.select('.canvas')
     .append('svg')
     .attr('width',width+margin.l+margin.r)
-    .attr('height',height+margin.t+margin.b)
+    .attr('height',height-margin.t-margin.b)
     .append('g')
     .attr('transform',"translate("+margin.l+","+margin.t+")");
 
-var projection = d3.geo.mercator().translate([width/2.5, height/1.7]).scale(130);
+var projection = d3.geo.mercator().translate([width/2.5, height/1.8]).scale(60);
     
 var path = d3.geo.path().projection(projection); 
 var force = d3.layout.force().size([width,height]).charge(-80).gravity(0);
-var scaleR = d3.scale.sqrt().range([0,50]).domain([0,53]);
+var scaleR = d3.scale.sqrt().range([0,30]).domain([0,53]);
 var SitesByCountry;
 var centroidCountry = d3.map();
 countCountry = d3.map();
@@ -25,10 +25,10 @@ countCountrySorted = d3.map();
 //------------------------------------------------------------------------load data     
 queue()
       .defer(d3.json, "data/countries.geo.json")
-      .defer(d3.csv, "data/UNESCO2.csv", parseUnesco)
+      .defer(d3.csv, "data/UNESCO_data.csv", parseUnesco)
       .await(DataLoaded)
 
-var dispatch = d3.dispatch('countryHover', 'countryLeave', 'countryClick');
+var dispatch = d3.dispatch('countryHover', 'countryLeave', 'countryClick', 'siteClick');
 
 function parseUnesco(d){ 
     return { 
@@ -173,11 +173,9 @@ function draw(center){
             }
         } //gravity
         function collide(dataPoint, Sites_){
-// console.log(dataPoint, center)
-console.log(countCountrySorted)
+
          var values = countCountrySorted.get(dataPoint.state);
-         console.log('v',values)
-// var values = 5;
+
           if (values>=0) {
 
             var nr = (scaleR(values)/Math.sqrt(2))+ padding} else {var nr = scaleR(0)+ 10;}
@@ -270,6 +268,7 @@ function toggleItem(elem) {
 toggleItem(document.querySelectorAll('.country'));
 toggleItem(document.querySelectorAll('.sites'));
 toggleItem(document.querySelectorAll('.country_nodes'));
+toggleItem(document.querySelectorAll('.sites'));
 ///////////////////////////////////////////toggle end////////////////
 }
 
@@ -284,6 +283,7 @@ dispatch.on('countryHover', function(countryName){
     })
     countryLiSelect.classed('hover', true)
     d3.select('.site_text').classed('hide', true);
+    d3.selectAll(".sites").classed('myactive', false);
 });
 
 dispatch.on('countryLeave', function(countryName){
@@ -319,15 +319,58 @@ function appendSiteGallery(Data){
         .append('img')
         .attr('src', function(d){ return d.url})
         .classed({'sites': true})
-        .on('click', site_click)
         .classed('hide', true)
+        // .on('click', function(d, i){
+        //     dispatch.siteClick(d);
+        // })
+
+.on('click', site_click);
+
+
+
 }
 ///////////////////////////////////////////toggle///////////////////
-function site_click(d){
+function site_click(d, i){
+var imageSelect = d3.selectAll(".sites").classed('myactive', false);
   var site_text= d3.select('.site_text').classed('hide', false);
     site_text.select('h2')
         .html(d.name)     
     site_text.select('p')
-        .html(d.desc)      
+        .html(d.desc)   
+
+
+var imageSelect = d3.select(this).classed('myactive', true);
+console.log(imageSelect)
 }
+
+
+// dispatch.on('siteClick', function(index){
+//     imageSelect = d3.selectAll('.sites').filter(function(d){
+//             console.log(d)
+//       return d == index;
+
+//     })
+//     imageSelect.classed('imageactive', true)
+
+
+  // var site_text= d3.select('.site_text').classed('hide', false);
+  //   site_text.select('h2')
+  //       .html(d.name)     
+  //   site_text.select('p')
+  //       .html(d.desc)   
+
+
+
+
+
+
+// });
+
+
+
+
+
+
+
+
 

@@ -1,25 +1,21 @@
-var margin = {t:50,l:50,b:50,r:50},
-    width  = $('.danger_canvas').width()-margin.l-margin.r,
-    height = $('.danger_canvas').height()-margin.t-margin.b,
+var margin = {t:150,l:50,b:50,r:50},
+    width  = $('.canvas').width()-margin.l-margin.r,
+    height = $('.canvas').height()-margin.t-margin.b,
     padding = 10;
 
 d3.select('.site_text').classed('hide', true);
 
-var danger_canvas = d3.select('.danger_canvas')
+var danger_canvas = d3.select('.canvas')
     .append('svg')
     .attr('width',width+margin.l+margin.r)
     .attr('height',height+margin.t+margin.b)
     .append('g')
     .attr('transform',"translate("+margin.l+","+margin.t+")");
 
-var color =  d3.scale.ordinal().domain([0, 2]).range(["#2B5189","#91A357","#DD5846"]);
-var colorDark =  d3.scale.ordinal().domain([0, 2]).range(["#2B5189","#91A357","#DD5846"]);
-
-    //cultural: green, natural: red, mixed:blue
-  //  blue 2B5189
-  //  red DD5846
-  //  green 91A357
-
+var color = d3.scale.ordinal()
+    .domain(["Cultural", "Natural", "Mixed"])
+    .range(["#fdb913", "#00addc", "7fb378"]);
+    
 var totalCultural;// = $(".Cultural").length;
 var totalNatural;// = $(".Natural").length;
 var totalMixed;// = $(".Mixed").length;
@@ -31,17 +27,6 @@ var scaleY = d3.scale.linear().domain([1, 57]).range([0, height]);
 countCountry = d3.map();
 countCountrySorted = d3.map();
 var SitesByCountry;
-
-
-
-
-
-
-
-
-
-
-
 
 //------------------------------------------------------------------------load data     
 queue()
@@ -112,99 +97,7 @@ function setup(worldMap_, Data){
   // RectList(Data); 
   appendCountryList(countCountrySorted); 
   TimeLine(Data);
-
-
-
-
-
-
-
-
 }//setup
-
-
-// function RectList(Data){
-// console.log(Data);
-// var nodes = danger_canvas.selectAll('.danger_nodes')
-//     .data(Data)
-// nodesEnter = nodes.enter()
-//     .append('rect')
-//     .attr('opacity', 1)
-//     .attr("class", function(d){ return d.category })
-//     .classed('danger_nodes', true)
-//     .attr('x', 100)
-//     .attr('y',function(d){return scaleY(d.index) })
-//     .attr('width', 5)
-//     .attr('height', 5)
-//     .style("fill", function(d) { return color(d.category);})
-
-// nodes.exit().remove()
-
-// }
-
-function TimeLine(Data){
-
-
-var minYear = d3.min(Data, function(d){ return d.start_year})
-var maxYear = d3.max(Data, function(d){ return d.end_year})
-
-scaleX.domain([minYear, maxYear])
-var index_lines = danger_canvas.selectAll(".lines")
-      .data(Data)
-      indexLinesEnter = index_lines.enter()
-      .append('line')
-      .attr('x1', 0 )
-      .attr('x2', width )
-      .attr('y1', function(d){ return scaleY(d.index) })
-      .attr('y2', function(d){ return scaleY(d.index) })
-      .style("stroke", "#e2e2e2")
-      .classed('index-lines', true); 
-
-
-var lines = danger_canvas.selectAll(".timelines")
-      .data(Data)
-      linesEnter = lines.enter()
-      .append('line')
-      .attr('x1', function(d){ return scaleX(d.start_year) })
-      .attr('x2', function(d){ return scaleX(d.end_year) })
-      .attr('y1', function(d){ return scaleY(d.index) })
-      .attr('y2', function(d){ return scaleY(d.index) })
-      .attr('class', function(d){ return d.category})
-      .classed('lines', true);
-
-
-      // .on('mouseover', function(d, i){
-      //     dispatch.countryHover(d);
-
-      // })
-      // .on('mouseleave', function(d, i){
-      //     dispatch.countryLeave(d);
-      // })
-      // .on('click', function(d, i){
-
-      //   d3.selectAll('.area_nodes').classed('hover', false).classed('myactive', false)
-      //   d3.selectAll('.sites').classed('hide',true)
-  
-      //   dispatch.countryClick(d);
-
-      //   var site_text= d3.select('.site_text');
-      //     site_text.select('h2')
-      //         .html('');   
-      //     site_text.select('p')
-      //         .html('');
-      // })
-
-totalCultural = $(".Cultural").length;
-totalNatural = $(".Natural").length;
-totalMixed = $(".Mixed").length;
-console.log("tc", totalCultural, totalNatural, totalMixed)
-
-
-var titles = $('.category_text').select('h2')
-              .html("Natural"+" "+totalNatural+"     -     "+"Mixed"+" "+totalMixed+" "+" - "+"Cultural"+" "+totalCultural);
-}
-
-
 
 function appendCountryList(Data){
 
@@ -240,8 +133,6 @@ var countryli_ul = d3.select(".country-list")
           site_text.select('p')
               .html('');
       })
-
-
 ///////////////////////////////////////////toggle///////////////////
 function toggleItem(elem) {
   for (var i = 0; i < elem.length; i++) {
@@ -302,14 +193,6 @@ dispatch.on('countryClick', function(countryName){
     countrySelectSite.classed('hide', false)
 
 
-totalCultural = $(".Cultural.myactive").length;
-totalNatural = $(".Natural.myactive").length;
-totalMixed = $(".Mixed.myactive").length;
-console.log("tc", totalCultural, totalNatural, totalMixed)
-
-
-var titles = $('.category_text').select('h2')
-              .html("Natural"+" "+totalNatural+"     -     "+"Mixed"+" "+totalMixed+" "+" - "+"Cultural"+" "+totalCultural);
 
 });
 

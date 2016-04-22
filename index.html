@@ -15,44 +15,43 @@
 <div class="container">
 	<section class="scene" id="scene-header">
 		<div class="row head-block">
-			<div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
-				<h1 class="small">Rekindeling<br>collective memory</h1>
-				<h1 class="sub">UNESCO world heritage sites</h1>
+
+			<div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">
+				<div class="title">Rekindeling<br>collective memory</div>
 			</div>
-			<div class="col-lg-3 col-md-s col-sm-3">			
-				<a href="index.html" id = "MapBtn" class="btn">Countries</a>
+
+			<div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">			
+				<a href="index.html" id = "MapBtn" class="navi">Countries</a>
+				<p>Each country is depicted as a square whose size represents the number of sites the country hosts.</p>
 			</div>
-			<div class="col-lg-3 col-md-s col-sm-3">		
-				<!-- <a href="TimeSeries.html" id = "TimeBtn" class="btn">Histogram</a> -->
-				<a href="Category.html" id = "CategoryBtn" class="btn">Sites</a>
+
+			<div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">		
+				<a href="Category.html" id = "CategoryBtn" class="navi">Sites</a>
 			</div>
-			<div class="col-lg-3 col-md-s col-sm-3">		
-				<a href = "danger.html" id = "DangerBtn" class="btn">Danger</a> 
+
+			<div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">		
+				<a href = "TimelineDanger.html" id = "DangerBtn" class="navi">Danger</a> 
 			</div>
 		</div>
 
 
 		<section class="section" id="section-map">
 		<div class="row body">
-			<div class="col-lg-3 col-md-3 col-sm-4 righttext">
-
-
+			<div class="col-lg-3 col-md-3 col-sm-3 left">
 				<div class="text-block">	
-					<p class="list">Total Sites Per Country.<br> Select country to explore.</p>
-				
-				<div class="scroll-block">	
-					<div class="country-list"></div>
-				</div>
+					<p>Select a country to explore its sites</p>
+					<div class="scroll-block">	
+						<div class="country-list"></div>
+					</div>
 				</div>
 			</div>
 
-
-
-        	<div class="col-lg-9 col-md-9 col-sm-8 rightmap">
-				<div class="map"></div>
-	
-				<div class="site_text"><h2></h2><br><p class="list"></p></div>
-				<div class="site_img"></div>
+        	<div class="col-lg-9 col-md-9 col-sm-8 right">
+	        	<div class="row canvas"></div>
+	        	<div class="site_text"><h2></h2><br><p></p></div>
+				<div class="row subcanvas">
+					<div class="site_img"></div>
+				</div>
 			</div>
 		</div>
 		</section>
