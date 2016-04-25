@@ -1,0 +1,268 @@
+html,body,h1,h2,h3,h4,p,div,ul,li,svg{
+    margin:0;
+    padding:0;
+    font-size:100%;
+}
+
+/*------------Structure-------------*/
+html,body{
+    height: 100%;
+    position: relative;
+    background:#fff7f4;
+    color:#000;
+    font-family: 'Lato';
+}
+@font-face{
+    font-family:Lato-Black;
+    src:url('fonts/lato/Lato-Black.eot');
+    src:url('fonts/lato/Lato-Black.woff');
+}
+@font-face{
+    font-family:Lato-Reg;
+    src:url('fonts/lato/Lato-Regular.eot');
+    src:url('fonts/lato/Lato-Regular.woff');
+}
+
+@font-face{
+    font-family:Lato-Thin;
+    src:url('fonts/lato/Lato-Light.eot');
+    src:url('fonts/lato/Lato-Light.woff');
+}
+@font-face{
+    font-family:Lato-Itc;
+    src:url('fonts/lato/Lato-Italic.eot');
+    src:url('fonts/lato/Lato-Italic.woff');
+}
+
+
+.col-sm-3, .col-md-3, .col-lg-3{
+    padding:0px;
+    margin:0px;
+}
+
+/*------------font-------------*/
+h1, h2, p, li, a{
+    padding-left:10px;
+}
+h1{ font-family:'Lato-Black';
+    font-size:27px;
+    line-height:22px;
+
+}
+
+
+
+.title{ font-family:'Lato-Black';
+    text-transform: uppercase;
+    font-size:15px;
+    line-height:15px;
+}
+.navi {
+    color:black;
+    font-family:'Lato-Reg';
+    text-transform: uppercase;
+    font-size:15px;
+    line-height:15px;
+}
+
+
+
+.sub{ font-family:'Lato-Thin';
+    font-size:15px;
+    line-height:15px;
+}
+h2{ 
+    font-family:'Lato-Reg';
+    font-size: 12pt;
+    line-height:14.4px;
+    }
+
+p{
+    font-family:'Lato-Reg';
+    font-size: 9.5pt;
+    line-height:17px;
+}
+
+li{
+    list-style: none;
+    font-family:'Lato-Thin';
+    font-size: 9.5pt;
+    line-height:20px;
+    color:rgb(140, 140, 140);
+}
+
+
+.c{
+color:#fdb913;
+}
+.m{
+color:#7fb378;
+}
+.n{
+color:#00addc;
+}
+span{
+    color:black;
+    padding-left:5px;
+}
+
+.container{
+    width:100%;
+    height: 100%;
+    margin-left:auto;
+}
+.scene{
+    width: 95%; height: 100%; margin: auto;
+}
+
+.head-block{
+    padding-top:10px;
+    margin-bottom:50px;
+}
+
+.block{
+    display:inline-block;
+}
+.text-block{
+    width:90%;
+    height:100%;
+    padding-top: 10px;
+    margin-bottom:10px;
+    background-color:#f9f4f2;
+}
+
+.scroll-block{
+    overflow-y:scroll;
+    width:90%;
+    height:90%;
+    padding-top: 10px;
+
+  }
+.section{
+    height:80%;
+}
+.body{
+    height:100%;
+}
+.right{
+    height:100%;
+}
+.left{
+    height:100%;
+}
+/*---------------------------------canvases */
+.canvas{
+    width:100%;
+    height: 80%;
+    background:#fff7f4;
+
+}
+
+.subcanvas{
+    width:100%;
+    height: 20%;
+
+}
+.vcenter{
+    vertical-align: center;
+}
+
+/*---------------------------------site gallery and images and info */
+.site_text h2, .site_text p{
+    width:90%;
+    margin:auto;
+}
+.site_text{
+    position:fixed;
+    background-color:#f9f4f2;
+    padding:10px;
+    bottom:25%;
+    width:40%;
+    display:block;
+    text-align:left;
+    margin:auto;
+}
+.site_img{
+    display:block;
+    overflow: -moz-scrollbars-vertical;
+    overflow-x:scroll;
+    white-space:nowrap;
+}
+.sites{
+    display: inline-block;
+    padding:10px;
+    width:200px;
+    height:120px;
+    clip-path: rect(10px, 20px, 30px, 40px);
+}
+
+/*------------------------------------------------time line-----------------------------------------*/
+
+.index-lines{
+    stroke:black;
+    stroke-width:1px;
+    opacity:.3;
+}
+.lines{
+    stroke:#dd3322;
+    stroke-width:1px;
+    opacity:.6;
+}
+/* ----------------------------------------------- SELECTIONS ------------------------------------*/
+.hide{
+    display:none;
+}      
+
+.myactive{
+    color:black;
+    fill:black;
+    opacity:1;
+    stroke:black;
+    stroke-width:.1px;
+    font-family:'Lato-Reg';
+}
+
+
+.sites.myactive{
+    display: inline-block;
+    padding:10px;
+    width:400px;
+    height:240px;
+    clip-path: rect(10px, 20px, 30px, 40px);
+}
+
+
+.lines.myactive{
+        stroke:#dd3322;
+    opacity:1;
+    stroke-width:2px;
+}
+
+
+.area_active{
+    opacity:1;
+    stroke:black;
+    stroke-width:1px;
+    font-family:'Lato-Reg';
+}
+.hover{
+  opacity:.45;
+}
+/* ----------------------------------------------- IMAGE STYLING ------------------------------------*/
+.node_img{
+    clip-path: rect(10px, 20px, 30px, 40px);
+}
+.gallery{
+    width:100%;
+    height:800px;
+    position:fixed;
+}
+
+.img_canvas{
+    width:100%;
+    height:100%;
+}
+a{
+    text-decoration: none;
+    text-decoration-color: none;
+}
