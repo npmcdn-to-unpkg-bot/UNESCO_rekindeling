@@ -108,15 +108,15 @@ scaleR.domain(d3.extent(Data, function(d) { return d.area; }));
 var nodes = category_canvas.selectAll('.area_nodes')
     .data(Data)
 nodesEnter = nodes.enter()
-    .append('rect')
+    .append('circle')
     .attr('opacity', .5)
     .attr("class", function(d){ return d.category})
     .classed('area_nodes', true)
     // .classed('country', true)
-    .attr('x',function(d){return d.x})
-    .attr('y',function(d){return d.y})
-    .attr('width', function(d){ return scaleR(d.area) })
-    .attr('height', function(d){ return scaleR(d.area) })
+    .attr('cx',function(d){return d.x})
+    .attr('cy',function(d){return d.y})
+    .attr('r', function(d){ return scaleR(d.area) })
+    // .attr('height', function(d){ return scaleR(d.area) })
     .style("fill", function(d) { return color(d.category);})
 
 nodes.exit().remove()
@@ -155,8 +155,8 @@ function onForceTick(e){
             d.x += (focus.x-d.x)*(e.alpha*.1);
             d.y += (focus.y-d.y)*(e.alpha*.1);
         })
-       .attr('y',function(d){return d.y})
-       .attr('x',function(d){return d.x})
+       .attr('cy',function(d){return d.y})
+       .attr('cx',function(d){return d.x})
 }
     function collide(dataPoint){
     var nr = (scaleR(dataPoint.area)/Math.sqrt(2))+ 1;
