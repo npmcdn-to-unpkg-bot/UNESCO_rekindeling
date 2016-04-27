@@ -26,7 +26,7 @@ foci.m = { x: width*.15, y: height/2 };
 
 // var totalCultural, totalNatural, totalMixed;
 
-var scaleR = d3.scale.sqrt().range([6,100]);
+var scaleR = d3.scale.sqrt().range([3,60]);
 var scaleX = d3.scale.linear().range([0, width]);
 var SitesByCountry;
 var centroidCountry = d3.map();
