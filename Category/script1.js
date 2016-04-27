@@ -1,3 +1,6 @@
+(function() {
+
+
 var margin = {t:50,l:50,b:50,r:50},
     width  = $('.canvas').width()-margin.l-margin.r,
     height = $('.canvas').height()-margin.t-margin.b,
@@ -5,7 +8,7 @@ var margin = {t:50,l:50,b:50,r:50},
 
 d3.select('.site_text').classed('hide', true);
 
-var category_canvas = d3.select('.canvas')
+var category_canvas = d3.select('#canvas-2')
     .append('svg')
     .attr('width',width+margin.l+margin.r)
     .attr('height',height+margin.t+margin.b)
@@ -26,7 +29,7 @@ foci.m = { x: width*.15, y: height/2 };
 
 // var totalCultural, totalNatural, totalMixed;
 
-var scaleR = d3.scale.sqrt().range([6,100]);
+var scaleR = d3.scale.sqrt().range([3,60]);
 var scaleX = d3.scale.linear().range([0, width]);
 var SitesByCountry;
 var centroidCountry = d3.map();
@@ -191,7 +194,7 @@ function onForceTick(e){
 ////////////////////////////////////////////////////////////////////////////////////////////////////append List
 function appendCountryList(Data){
 
-var countryli_ul = d3.select(".country-list")
+var countryli_ul = d3.select(".country-list2")
       .append('ul');
    var countryli = countryli_ul
       .selectAll('li')
@@ -299,4 +302,7 @@ var titles = $('.cultural').select('span')
               .html(totalNatural);
 
 });
+
+
+}).call(this);
 
