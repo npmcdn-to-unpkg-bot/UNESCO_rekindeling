@@ -11,6 +11,7 @@ $(function() {
 
 
 function start() {
+
     $("#section-2").hide();
       $("#capt-2").hide();
 }
