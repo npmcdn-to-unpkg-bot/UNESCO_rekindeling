@@ -11,6 +11,7 @@ $(function() {
 
 
 function start() {
+
     $("#section-2").hide();
       $("#capt-2").hide();
 }
@@ -36,7 +37,7 @@ function toggleItem(elem) {
     });
   };
 }
-toggleItem(document.querySelectorAll('.navi'));
+toggleItem(document.querySelectorAll('.navi.tog'));
 
 
 //////////////// end //////////////////////////////
