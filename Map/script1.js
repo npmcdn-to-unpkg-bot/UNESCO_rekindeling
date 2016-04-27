@@ -5,7 +5,7 @@ var margin = {t:10,l:50,b:10,r:50},
 
 d3.select('.site_text').classed('hide', true);
 
-var map = d3.select('.canvas')
+var map = d3.select('#canvas-1')
     .append('svg')
     .attr('width',width+margin.l+margin.r)
     .attr('height',height-margin.t-margin.b)
@@ -25,10 +25,10 @@ countCountrySorted = d3.map();
 //------------------------------------------------------------------------load data     
 queue()
       .defer(d3.json, "data/countries.geo.json")
-      .defer(d3.csv, "data/UNESCO_data.csv", parseUnesco)
+      .defer(d3.csv, "data/UNESCO_data2.csv", parseUnesco)
       .await(DataLoaded)
 
-var dispatch = d3.dispatch('countryHover', 'countryLeave', 'countryClick', 'siteClick');
+var dispatch = d3.dispatch('countryHover', 'countryLeave', 'countryClick', 'siteClick', 'countryNodeClick', 'countryNodeHover', 'countryNodeLeave');
 
 function parseUnesco(d){ 
     return { 
@@ -76,7 +76,7 @@ function setup(worldMap_, Data){
                 y0:centroid[1], 
                 x:centroid[0], 
                 y:centroid[1], 
-                r:10
+                r:40
               };
     })
 
@@ -117,9 +117,6 @@ function draw(center){
             .data(center, function(d){return d.state})
         var nodesEnter = nodes.enter()
             .append('g')
-            .attr('opacity', 0)
-            .attr('class','country_nodes');      
-     
         nodes
             .attr('transform',function(d){ return 'translate('+d.x+','+d.y+')';})
             .attr('opacity', .7)
@@ -128,23 +125,24 @@ function draw(center){
             .attr('data-value', function(d){
               return d.state;
             })
-            .classed('country', true)
-            .classed({'site_nodes': true})
+            // .classed('country', true)
+            .classed('country_nodes', true)
             .attr("r", function(d){
                   var values = countCountrySorted.get(d.state);
                   if (values>=0) {return scaleR(values); } else { return scaleR(0);}
             })
             .on('mouseover', function(d, i){
-                dispatch.countryHover(d);
+                dispatch.countryNodeHover(d);
             })
             .on('mouseleave', function(d, i){
-                dispatch.countryLeave(d);
+                dispatch.countryNodeLeave(d);
             })
             .on('click', function(d, i){
-              d3.selectAll('.site_nodes').classed('hover', false).classed('myactive', false)
+              d3.selectAll('.country_li').classed('hover', false).classed('myactive', false)
+              d3.selectAll('.country_nodes').classed('hover', false).classed('myactive', false)
               d3.selectAll('.sites').classed('hide',true)
         
-              dispatch.countryClick(d);
+              dispatch.countryNodeClick(d);
 
               var site_text= d3.select('.site_text');
                 site_text.select('h2')
@@ -218,15 +216,15 @@ function draw(center){
 ////////////////////////////////////////////////////////////////////////////////////////////////////append List
 function appendCountryList(Data){
 
-var countryli_ul = d3.select(".country-list")
+var countryli_ul = d3.select(".country-list1")
       .append('ul');
  var countryli = countryli_ul
       .selectAll('li')
       .data(countCountrySorted.keys())
       .enter()
       .append('li')
-      .attr('class', 'country-list')
-      .classed('country', true)
+      .attr('class', 'country_li')
+      // .classed('country', true)
       .classed('lst', true)
       .text(function(d){ 
         return  countCountrySorted.get(d) + " " + CountryLookup.get(d);
@@ -238,7 +236,7 @@ var countryli_ul = d3.select(".country-list")
           dispatch.countryLeave(d);
       })
       .on('click', function(d, i){
-        d3.selectAll('.site_nodes').classed('hover', false).classed('myactive', false)
+        d3.selectAll('.country_nodes').classed('hover', false).classed('myactive', false)
         d3.selectAll('.sites').classed('hide',true)
   
         dispatch.countryClick(d);
@@ -272,7 +270,7 @@ function toggleItem(elem) {
     });
   };
 }
-toggleItem(document.querySelectorAll('.country'));
+toggleItem(document.querySelectorAll('.country_li'));
 toggleItem(document.querySelectorAll('.sites'));
 toggleItem(document.querySelectorAll('.country_nodes'));
 toggleItem(document.querySelectorAll('.sites'));
@@ -285,7 +283,7 @@ dispatch.on('countryHover', function(countryName){
       return d.state == countryName
    })
    countrySelect.classed('hover', true)
-    countryLiSelect = d3.selectAll('.country').filter(function(d){ 
+    countryLiSelect = d3.selectAll('.country_li').filter(function(d){ 
       return d == countryName
     })
     countryLiSelect.classed('hover', true)
@@ -298,23 +296,78 @@ dispatch.on('countryLeave', function(countryName){
       return d.state == countryName;
     })
     countrySelect.classed('hover', false)
-    countryLiSelect = d3.selectAll('.country').filter(function(d){ 
+    countryLiSelect = d3.selectAll('.country_li').filter(function(d){ 
       return d == countryName
     })
     countryLiSelect.classed('hover', false)
 });
 
+
+
 dispatch.on('countryClick', function(countryName){
-    countrySelect = d3.selectAll('.country').filter(function(d){
+    countrySelect = d3.selectAll('.country_nodes').filter(function(d){
       return d.state == countryName;
     })
     countrySelect.classed('myactive', true)
+
     countrySelectSite = d3.selectAll('.sites').filter(function(d){
       return d.country_id == countryName;
     })
     countrySelectSite.classed('hide', false)
 });
 
+
+dispatch.on('countryNodeClick', function(countryName){
+    countrySelect = d3.selectAll('.country_nodes').filter(function(d){
+      return d == countryName;
+    })
+    countrySelect.classed('myactive', true)
+
+
+    countryLiSelect = d3.selectAll('.country_li').filter(function(d){
+      console.log(CountryLookup.get(d) == CountryLookup.get(countryName.state))
+
+      return  CountryLookup.get(d) == CountryLookup.get(countryName.state);
+    })
+    countryLiSelect.classed('myactive', true)
+
+
+
+    countrySelectSite = d3.selectAll('.sites').filter(function(d){
+      return CountryLookup.get(d.country_id) == CountryLookup.get(countryName.state);
+    })
+    countrySelectSite.classed('hide', false)
+});
+
+dispatch.on('countryNodeHover', function(countryName){
+    countrySelect = d3.selectAll('.country_nodes').filter(function(d){
+      return d == countryName;
+    })
+    countrySelect.classed('hover', true)
+
+
+    countryLiSelect = d3.selectAll('.country_li').filter(function(d){
+      console.log(CountryLookup.get(d) == CountryLookup.get(countryName.state))
+
+      return  CountryLookup.get(d) == CountryLookup.get(countryName.state);
+    })
+    countryLiSelect.classed('hover', true)
+});
+
+dispatch.on('countryNodeLeave', function(countryName){
+    countrySelect = d3.selectAll('.country_nodes').filter(function(d){
+      return d == countryName;
+    })
+    countrySelect.classed('hover', false)
+
+
+    countryLiSelect = d3.selectAll('.country_li').filter(function(d){
+      console.log(CountryLookup.get(d) == CountryLookup.get(countryName.state))
+
+      return  CountryLookup.get(d) == CountryLookup.get(countryName.state);
+    })
+    countryLiSelect.classed('hover', false)
+});
 
 function appendSiteGallery(Data){
 
@@ -327,11 +380,7 @@ function appendSiteGallery(Data){
         .attr('src', function(d){ return d.url})
         .classed({'sites': true})
         .classed('hide', true)
-        // .on('click', function(d, i){
-        //     dispatch.siteClick(d);
-        // })
-
-.on('click', site_click);
+        .on('click', site_click);
 
 
 

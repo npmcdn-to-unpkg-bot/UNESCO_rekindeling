@@ -49,17 +49,20 @@ h1{ font-family:'Lato-Black';
     line-height:22px;
 
 }
+strong{
+font-family:'Lato-Black';
+}
 
-
-
+.capt{
+    width:60%;
+}
 .title{ font-family:'Lato-Black';
     text-transform: uppercase;
     font-size:15px;
     line-height:15px;
 }
 .navi {
-    color:black;
-    font-family:'Lato-Reg';
+    color:rgb(140, 140, 140);    font-family:'Lato-Reg';
     text-transform: uppercase;
     font-size:15px;
     line-height:15px;
@@ -222,7 +225,11 @@ span{
     font-family:'Lato-Reg';
 }
 
-
+.navi.myactive{
+        color:black;
+    text-decoration: none;
+    text-decoration-color: none;
+}
 .sites.myactive{
     display: inline-block;
     padding:10px;
@@ -263,6 +270,11 @@ span{
     height:100%;
 }
 a{
+    text-decoration: none;
+    text-decoration-color: none;
+}
+
+a:focus {
     text-decoration: none;
     text-decoration-color: none;
 }
