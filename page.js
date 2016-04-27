@@ -36,7 +36,7 @@ function toggleItem(elem) {
     });
   };
 }
-toggleItem(document.querySelectorAll('.navi'));
+toggleItem(document.querySelectorAll('.navi.tog'));
 
 
 //////////////// end //////////////////////////////
