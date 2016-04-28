@@ -12,7 +12,7 @@ var map = d3.select('#canvas-1')
     .append('g')
     .attr('transform',"translate("+margin.l+","+margin.t+")");
 
-var projection = d3.geo.mercator().translate([width/2.5, height/1.8]).scale(60);
+var projection = d3.geo.mercator().translate([width/2.5, height/1.8]).scale(70);
     
 var path = d3.geo.path().projection(projection); 
 var force = d3.layout.force().size([width,height]).charge(-80).gravity(0);
