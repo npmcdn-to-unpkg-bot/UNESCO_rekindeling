@@ -77,13 +77,13 @@ $(document).ready(function(){
 
       // you can use just jquery for this
       $(document).ready(function(){
-         // $('.container').fadeIn(500,function(){
+ $('.overlay').show();
           $('#popup').show();
-         // });
+
  
       });
 
      $("#popup").on('click', function() {
         $('#popup').hide();
-
+ $('.overlay').hide();
      });

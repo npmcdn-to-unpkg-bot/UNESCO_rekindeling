@@ -400,6 +400,9 @@ console.log(imageSelect)
 }
 
 
+
+
+
 // dispatch.on('siteClick', function(index){
 //     imageSelect = d3.selectAll('.sites').filter(function(d){
 //             console.log(d)
