@@ -8,11 +8,27 @@
 		<title>UNESCO rekindeling collective memory by Lia Petonio and Lorenzo Scarpelli</title>
 		<link rel='stylesheet' type='text/css'>
 		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+		<link href="../style/style1.css" rel="stylesheet"/>
 		<link href="style/style1.css" rel="stylesheet"/>
 		<link href="style/style-mason.css" rel="stylesheet"/>
 	</head>
 	<body>
+
+
 <div class="container">
+<!-- <div id="overlay-back"></div> -->
+<div id="popup">
+	<div class="popup-content">
+		<div class="left-img">
+			<img src="data/thumbGOOD/b-theater.png" class="landing-img"/>
+		</div>
+			<div class="right-label">
+			<h2 class="bold">PALMYRA</h2>
+			<h2 class="thin"><br>Perceiving change from time-based searches<br>Case Study</h2>
+			 <a href="#" id = "explore" class="thin fade-2"><br>EXPLORE</a>
+		</div>
+	</div>
+</div>
 <!-- - - - - - - - - - - - - - - header section - - - - - - - - - - - - - - -->
 			<div class="row head-block">
 	<div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">
@@ -20,17 +36,18 @@
 			</div>
 
 			<div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">			
-				<a href="../index.html" id = "btn-1" class="navi tog">Countries</a>
+				<a href="../index.html" id = "btn-1-pal" class="navi">Countries</a>
 <!-- 				<p class="capt" id="capt-1">Each country is depicted as a circle whose <strong>size</strong> represents the number of <strong>sites per country</strong>.</p> -->
 			</div>
 
 			<div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">		
-				<a href="#" id = "btn-2" class="navi tog">Sites</a>
+				<a href="#" id = "btn-2-pal" class="navi">Sites</a>
 <!-- 				<p class="capt" id="capt-2">Each site is depicted as a circle whose <strong>size</strong> represents <strong>land area</strong> in hectares.</p> -->
 			</div>
 
 			<div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">		
-				<a href = "Palmyra/index.html" id = "btn-3" class="navi">Sites in Danger</a> 
+				<a href = "home.html" id = "btn-3" class="navi">Sites in Danger</a> 
+				<p class="capt">Each image bubble represents a category of <strong>content</strong> compiled from the <strong>time-based</strong> search results for 'Palmyra' in <strong>Google Images</strong></p>
 			</div>
 			</div>
 <!-- - - - - - - - - - - - - - - header section - - - - - - - - - - - - - - -->
@@ -1981,6 +1998,14 @@
 <script src="lib/queue/queue.min.js"></script>
 <script src="http://d3js.org/d3.v3.min.js"></script>
 <script src="force_script1.js"></script>
-<script src="page.js"></script>
+<script src="../page.js"></script>
+<script>
+
+$(document).ready(function(){
+    $("#btn-2-pal").on('click', function(){
+console.log("home")
+            window.location.href='../index.html';
+
+})}); </script>
 </body>
 </html>
