@@ -25,7 +25,7 @@ countCountrySorted = d3.map();
 //------------------------------------------------------------------------load data     
 queue()
       .defer(d3.json, "data/countries.geo.json")
-      .defer(d3.csv, "data/UNESCO_data2.csv", parseUnesco)
+      .defer(d3.csv, "data/UNESCO_data.csv", parseUnesco)
       .await(DataLoaded)
 
 var dispatch = d3.dispatch('countryHover', 'countryLeave', 'countryClick', 'siteClick', 'countryNodeClick', 'countryNodeHover', 'countryNodeLeave');

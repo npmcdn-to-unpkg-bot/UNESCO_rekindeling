@@ -38,7 +38,7 @@ var SitesByCountry;
 //------------------------------------------------------------------------load data     
 queue()
       .defer(d3.json, "data/countries.geo.json")
-      .defer(d3.csv, "data/UNESCO_danger2.csv", parseUnesco)
+      .defer(d3.csv, "data/UNESCO_danger.csv", parseUnesco)
       .await(DataLoaded)
 
 var dispatch = d3.dispatch('countryHover', 'countryLeave', 'countryClick');

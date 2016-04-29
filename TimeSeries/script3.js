@@ -5,7 +5,7 @@ var margin = {t:120,l:50,b:50,r:50},
 
 queue()
       // .defer(d3.json, "data/countries.geo.json")
-      .defer(d3.csv, "data/UNESCO2.csv", parseUnesco)
+      .defer(d3.csv, "data/UNESCO_data.csv", parseUnesco)
       .defer(d3.csv, "data/country_names.csv", parseCountry)
       .await(dataLoaded)
 
