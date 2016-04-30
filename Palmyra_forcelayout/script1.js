@@ -10,8 +10,8 @@ var force = d3.layout.force()
     var nodes;
 //------------------------------------------------------------------------load data     
 queue()
-      .defer(d3.csv, "imgData/Palmyra_beforeWar.csv", parseImage)
-      .defer(d3.csv, "imgData/Palmyra_inWar.csv", parseImage)
+      .defer(d3.csv, "img_csv/Palmyra_beforeWar.csv", parseImage)
+      .defer(d3.csv, "img_csv/Palmyra_inWar.csv", parseImage)
       .await(DataLoaded)
 
 function parseImage(d){ 

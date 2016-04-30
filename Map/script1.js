@@ -1,3 +1,5 @@
+(function() {
+
 var margin = {t:10,l:50,b:10,r:50},
     width  = $('.canvas').width()-margin.l-margin.r,
     height = $('.canvas').height()-margin.t-margin.b,
@@ -22,7 +24,37 @@ var centroidCountry = d3.map();
 countCountry = d3.map();
 countCountrySorted = d3.map();
 
+
+
+
+
+function start() {
+$("#section-2").hide();
+init_vis1();
+}
+window.onload = start;
+
+
+$(document).ready(function(){
+        $("#btn-3").on('click', function(){
+        $(".section").hide(); 
+        $("#section-1").show();
+
+})});
+
+$(document).ready(function(){
+        $("#btn-32").on('click', function(){
+        $(".section").hide(); 
+        $("#section-1").show();
+})});
+
+
+function init_vis1(){
+
 //------------------------------------------------------------------------load data     
+
+
+
 queue()
       .defer(d3.json, "data/countries.geo.json")
       .defer(d3.csv, "data/UNESCO_data.csv", parseUnesco)
@@ -396,39 +428,12 @@ var imageSelect = d3.selectAll(".sites").classed('myactive', false);
 
 
 var imageSelect = d3.select(this).classed('myactive', true);
-console.log(imageSelect)
+
 }
 
+}
 
-
-
-
-// dispatch.on('siteClick', function(index){
-//     imageSelect = d3.selectAll('.sites').filter(function(d){
-//             console.log(d)
-//       return d == index;
-
-//     })
-//     imageSelect.classed('imageactive', true)
-
-
-  // var site_text= d3.select('.site_text').classed('hide', false);
-  //   site_text.select('h2')
-  //       .html(d.name)     
-  //   site_text.select('p')
-  //       .html(d.desc)   
-
-
-
-
-
-
-// });
-
-
-
-
-
+}).call(this);
 
 
 

@@ -8,18 +8,6 @@ $(function() {
 
 
 
-
-
-function start() {
-
-    $("#section-2").hide();
-    $("#capt-2").hide();
-}
-window.onload = start;
-
-
-
-
 function toggleItem(elem) {
   for (var i = 0; i < elem.length; i++) {
     elem[i].addEventListener("click", function(e) {
@@ -46,44 +34,36 @@ toggleItem(document.querySelectorAll('.navi.tog'));
 ////////////////page 2//////////////////////////////
 
 $(document).ready(function(){
-    $("#btn-1").on('click', function(){
+    $("#btn-3").on('click', function(){
         $(".section").hide(); 
         $("#section-1").show();
-        $(".capt").hide(); 
-        $("#capt-1").show();
 
     })});
-//////////////// end //////////////////////////////
+// //////////////// end //////////////////////////////
 ////////////////page 3//////////////////////////////
+$(document).ready(function(){
+    $("#btn-1").on('click', function(){
+        window.location.href='index.html';
+
+})}); 
 
 $(document).ready(function(){
     $("#btn-2").on('click', function(){
-    $(".section").hide(); 
-    $("#section-2").show();
-    $(".capt").hide(); 
-    $("#capt-2").show();
-
-    })}); 
-
-
-
-$(document).ready(function(){
-    $("#btn-3").on('click', function(){
         window.location.href='Palmyra/home.html';
 
 })}); 
 
 
 
-      // you can use just jquery for this
-      $(document).ready(function(){
- $('.overlay').show();
-          $('#popup').show();
+// you can use just jquery for this
+$(document).ready(function(){
+    $('.overlay').show();
+    $('#popup').show();
 
- 
-      });
 
-     $("#popup").on('click', function() {
-        $('#popup').hide();
- $('.overlay').hide();
-     });
+});
+
+$("#popup").on('click', function() {
+  $('#popup').hide();
+  $('.overlay').hide();
+});

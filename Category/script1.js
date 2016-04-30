@@ -36,6 +36,26 @@ var centroidCountry = d3.map();
 countCountry = d3.map();
 countCountrySorted = d3.map();
 
+$(document).ready(function(){
+        $("#btn-4").on('click', function(){
+        $(".section").hide(); 
+        $("#section-2").show();
+        init_vis2();
+    })});
+//////////////// en
+
+
+
+
+
+
+
+
+
+function init_vis2(){
+
+
+
 //------------------------------------------------------------------------load data     
 queue()
       .defer(d3.json, "data/countries.geo.json")
@@ -302,6 +322,8 @@ var titles = $('.cultural').select('span')
               .html(totalNatural);
 
 });
+
+}
 
 
 }).call(this);
