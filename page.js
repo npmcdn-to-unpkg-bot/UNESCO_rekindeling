@@ -13,9 +13,11 @@ $(function() {
 function start() {
 
     $("#section-2").hide();
-      $("#capt-2").hide();
+    $("#capt-2").hide();
 }
 window.onload = start;
+
+
 
 
 function toggleItem(elem) {
@@ -64,14 +66,24 @@ $(document).ready(function(){
     })}); 
 
 
-// $(function() {
 
-//    $(".site_img").mousewheel(function(event, delta) {
+$(document).ready(function(){
+    $("#btn-3").on('click', function(){
+        window.location.href='Palmyra/home.html';
 
-//       this.scrollLeft -= (delta * 30);
-    
-//       event.preventDefault();
+})}); 
 
-//    });
 
-// });
+
+      // you can use just jquery for this
+      $(document).ready(function(){
+ $('.overlay').show();
+          $('#popup').show();
+
+ 
+      });
+
+     $("#popup").on('click', function() {
+        $('#popup').hide();
+ $('.overlay').hide();
+     });

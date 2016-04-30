@@ -18,6 +18,11 @@ html,body{
     src:url('fonts/lato/Lato-Black.woff');
 }
 @font-face{
+    font-family:Lato-Bold;
+    src:url('fonts/lato/Lato-Bold.eot');
+    src:url('fonts/lato/Lato-Bold.woff');
+}
+@font-face{
     font-family:Lato-Reg;
     src:url('fonts/lato/Lato-Regular.eot');
     src:url('fonts/lato/Lato-Regular.woff');
@@ -42,7 +47,7 @@ html,body{
 .centerexplore{
     height:50%;
     top:60%;
-            text-align: center;
+    text-align: center;
 
 
 }
@@ -59,24 +64,31 @@ h1{ font-family:'Lato-Black';
     line-height:22px;
 
 }
+strong{
+font-family:'Lato-Black';
+}
 
-
-
+.capt{
+    width:60%;
+}
 .title{ font-family:'Lato-Black';
     text-transform: uppercase;
     font-size:15px;
     line-height:15px;
 }
 .navi {
-    color:black;
-    font-family:'Lato-Reg';
+    color:rgb(140, 140, 140);    font-family:'Lato-Reg';
     text-transform: uppercase;
     font-size:15px;
     line-height:15px;
 }
 
-
-
+.thin{
+    font-family:'Lato-Thin';
+}
+.bold{
+    font-family:'Lato-Bold';
+}
 .sub{ font-family:'Lato-Thin';
     font-size:15px;
     line-height:15px;
@@ -84,7 +96,7 @@ h1{ font-family:'Lato-Black';
 h2{ 
     font-family:'Lato-Reg';
     font-size: 12pt;
-    line-height:14.4px;
+    line-height:18px;
     }
 
 p{
@@ -93,6 +105,13 @@ p{
     line-height:17px;
 }
 
+li{
+    list-style: none;
+    font-family:'Lato-Thin';
+    font-size: 9.5pt;
+    line-height:20px;
+    color:rgb(140, 140, 140);
+}
 .container{
     width:95%;
     height: 100%;
@@ -163,5 +182,126 @@ a{
   background-image-opacity:.7;
 
 
+}
+#popup{
+position:absolute;
+display:hidden;
+top:10%;
+width:90%;
+height:70%;
+margin:auto;
+background:#fff7f4;
+background-opacity:.7;
+z-index:7;
+/*padding:20px;*/
+
+}
+.overlay{
+position:absolute;
+display:hidden;
+top:0px;
+left:0px;
+width:100%;
+height:100%;
+background:rgba(0,0,0,.5);
+
+z-index:6;
+
+}
+.popup-content{
+height:50%;
+width:70%;
+margin:auto;
+margin-top:15%;
+}
+.landing-img{
+ width:150px;
+position:absolute;
+}
+#img2{
+
+    opacity:0;
+    -webkit-animation:fadeIn ease-in 1;
+    -moz-animation:fadeIn ease-in 1;
+    animation:fadeIn ease-in 1;
+
+    -webkit-animation-fill-mode:forwards; 
+    -moz-animation-fill-mode:forwards;
+    animation-fill-mode:forwards;
+
+    -webkit-animation-duration:1s;
+    -moz-animation-duration:1s;
+    animation-duration:1s;
+    
+    -webkit-animation-delay: 2s;
+    -moz-animation-delay: 2s;
+    animation-delay: 2s;
+}
+.right-label{
+    left:40%;
+    top:12%;
+    position:relative;
+}
+
+.left-img{
+    float:left;
+    position:relative;
+    margin-left:20%;
+}
+
+
+
+
+@-webkit-keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
+@-moz-keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
+@keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
+.fade-1 {
+    opacity:0;
+    -webkit-animation:fadeIn ease-in 1;
+    -moz-animation:fadeIn ease-in 1;
+    animation:fadeIn ease-in 1;
+
+    -webkit-animation-fill-mode:forwards; 
+    -moz-animation-fill-mode:forwards;
+    animation-fill-mode:forwards;
+
+    -webkit-animation-duration:1s;
+    -moz-animation-duration:1s;
+    animation-duration:1s;
+    
+    -webkit-animation-delay: 1s;
+    -moz-animation-delay: 1s;
+    animation-delay: 1s;
+}
+.fade-2 {
+    opacity:0;
+    -webkit-animation:fadeIn ease-in 1;
+    -moz-animation:fadeIn ease-in 1;
+    animation:fadeIn ease-in 1;
+
+    -webkit-animation-fill-mode:forwards; 
+    -moz-animation-fill-mode:forwards;
+    animation-fill-mode:forwards;
+
+    -webkit-animation-duration:1s;
+    -moz-animation-duration:1s;
+    animation-duration:1s;
+    
+    -webkit-animation-delay: 2s;
+    -moz-animation-delay: 2s;
+    animation-delay: 2s;
+}
+
+
+
+
+#explore{
+/*    visibility: none;*/
+/*    z-index:1;
+    position: absolute;
+    top:50vh;
+    right:10vw;
+    width:270px;*/
+    color:black;
 }
 
