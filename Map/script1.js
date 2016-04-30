@@ -1,3 +1,5 @@
+(function() {
+
 var margin = {t:10,l:50,b:10,r:50},
     width  = $('.canvas').width()-margin.l-margin.r,
     height = $('.canvas').height()-margin.t-margin.b,
@@ -12,7 +14,7 @@ var map = d3.select('#canvas-1')
     .append('g')
     .attr('transform',"translate("+margin.l+","+margin.t+")");
 
-var projection = d3.geo.mercator().translate([width/2.5, height/1.8]).scale(60);
+var projection = d3.geo.mercator().translate([width/2.5, height/1.8]).scale(70);
     
 var path = d3.geo.path().projection(projection); 
 var force = d3.layout.force().size([width,height]).charge(-80).gravity(0);
@@ -22,10 +24,40 @@ var centroidCountry = d3.map();
 countCountry = d3.map();
 countCountrySorted = d3.map();
 
+
+
+
+
+function start() {
+$("#section-2").hide();
+init_vis1();
+}
+window.onload = start;
+
+
+$(document).ready(function(){
+        $("#btn-3").on('click', function(){
+        $(".section").hide(); 
+        $("#section-1").show();
+
+})});
+
+$(document).ready(function(){
+        $("#btn-32").on('click', function(){
+        $(".section").hide(); 
+        $("#section-1").show();
+})});
+
+
+function init_vis1(){
+
 //------------------------------------------------------------------------load data     
+
+
+
 queue()
       .defer(d3.json, "data/countries.geo.json")
-      .defer(d3.csv, "data/UNESCO_data2.csv", parseUnesco)
+      .defer(d3.csv, "data/UNESCO_data.csv", parseUnesco)
       .await(DataLoaded)
 
 var dispatch = d3.dispatch('countryHover', 'countryLeave', 'countryClick', 'siteClick', 'countryNodeClick', 'countryNodeHover', 'countryNodeLeave');
@@ -396,6 +428,7 @@ var imageSelect = d3.selectAll(".sites").classed('myactive', false);
 
 
 var imageSelect = d3.select(this).classed('myactive', true);
+<<<<<<< HEAD
 console.log(imageSelect)
 }
 
@@ -426,9 +459,14 @@ console.log(imageSelect)
 // });
 
 
+=======
+>>>>>>> master
 
+}
 
+}
 
+}).call(this);
 
 
 
