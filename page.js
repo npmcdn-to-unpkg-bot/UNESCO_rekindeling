@@ -8,7 +8,7 @@ $(function() {
 
 
 
-<<<<<<< HEAD
+
 
 
 function start() {
@@ -21,8 +21,7 @@ window.onload = start;
 
 
 
-=======
->>>>>>> master
+
 function toggleItem(elem) {
   for (var i = 0; i < elem.length; i++) {
     elem[i].addEventListener("click", function(e) {
@@ -70,7 +69,6 @@ $(document).ready(function(){
 
 
 
-<<<<<<< HEAD
 $(document).ready(function(){
     $("#btn-3").on('click', function(){
         window.location.href='Palmyra/home.html';
@@ -91,7 +89,7 @@ $(document).ready(function(){
         $('#popup').hide();
  $('.overlay').hide();
      });
-=======
+
 // you can use just jquery for this
 $(document).ready(function(){
     $('.overlay').show();
@@ -104,4 +102,4 @@ $("#popup").on('click', function() {
   $('#popup').hide();
   $('.overlay').hide();
 });
->>>>>>> master
+

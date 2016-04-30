@@ -428,41 +428,11 @@ var imageSelect = d3.selectAll(".sites").classed('myactive', false);
 
 
 var imageSelect = d3.select(this).classed('myactive', true);
-<<<<<<< HEAD
+
 console.log(imageSelect)
 }
 
 
-
-
-
-// dispatch.on('siteClick', function(index){
-//     imageSelect = d3.selectAll('.sites').filter(function(d){
-//             console.log(d)
-//       return d == index;
-
-//     })
-//     imageSelect.classed('imageactive', true)
-
-
-  // var site_text= d3.select('.site_text').classed('hide', false);
-  //   site_text.select('h2')
-  //       .html(d.name)     
-  //   site_text.select('p')
-  //       .html(d.desc)   
-
-
-
-
-
-
-// });
-
-
-=======
->>>>>>> master
-
-}
 
 }
 
