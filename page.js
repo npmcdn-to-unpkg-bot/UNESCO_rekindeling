@@ -91,15 +91,22 @@ $(document).ready(function(){
      });
 
 // you can use just jquery for this
-$(document).ready(function(){
-    $('.overlay').show();
-    $('#popup').show();
+// $(document).ready(function(){
+//     $('.overlay').show();
+//     $('#popup').show();
 
 
-});
+// });
 
+<<<<<<< HEAD
 $("#popup").on('click', function() {
   $('#popup').hide();
   $('.overlay').hide();
 });
 
+=======
+// $("#popup").on('click', function() {
+//   $('#popup').hide();
+//   $('.overlay').hide();
+// });
+>>>>>>> master
