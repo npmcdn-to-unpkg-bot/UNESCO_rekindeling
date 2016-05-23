@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+<!-- 		<meta charset="ISO-8859-1"> -->
+		<meta http-equiv="Content-Type" content="text/html;charset=ISO-8859-8">
+		<META http-equiv="Content-Type" content="text/html; charset=EUC-JP">
+		<title>UNESCO rekindeling collective memory by Lia Petonio and Lorenzo Scarpelli</title>
+		<link rel='stylesheet' type='text/css'>
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+		<link href="style/style1.css" rel="stylesheet"/>
+	</head>
+
+	<script>
+		$(function() {
+        $(".site_img").mousewheel(function(event,delta) {
+            this.scrollLeft -= (delta * 30);
+
+            event.preventDefault();
+        })
+    })
+	</script>
+	<body>
+
+<div class="container">
+	<section class="scene" id="scene-header">
+		<div class="row head-block">
+
+			<div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">
+				<div class="title">Rekindeling<br>collective memory</div>
+			</div>
+
+			<div class="col-lg-5 col-md-5col-sm-5 col-xs-12">			
+				<a href="#" id = "btn-1" class="navi">All Sites</a>
+<!-- 				<p class="capt" id="capt-1">Each country is depicted as a circle whose <strong>size</strong> represents the number of <strong>sites per country</strong>.</p> -->
+			</div>
+
+			<div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">		
+				<a href = "#" id = "btn-2" class="navi">Sites in Danger</a> 
+			</div>
+		</div>
+
+
+		<section class="section" id="section-1">
+		<div class="row body">
+			<div class="col-lg-3 col-md-3 col-sm-3 left">
+				<div class="text-block">	
+					<p>Select a country to explore its sites</p>
+					<div class="scroll-block">	
+						<div class="country-list1"></div>
+					</div>
+				</div>
+			</div>
+
+        	<div class="col-lg-9 col-md-9 col-sm-9 right">
+
+				<div class="row btn-block">
+					<div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">			
+						<a href="#" id = "btn-3" class="navi">Sites Per Country</a>
+						<p class="capt" id="capt-1">Each country is depicted as a circle whose <strong>size</strong> represents the number of <strong>sites per country</strong>.</p>
+					</div>
+
+					<div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">		
+						<a href="#" id = "btn-4" class="navi">Sites By Land Area</a>
+					
+					</div>
+				</div>
+	        	<div class="row canvas" id="canvas-1"></div>
+	        	<div class="site_text"><h2></h2><br><p></p></div>
+				<div class="row subcanvas">
+					<div class="site_img"></div>
+				</div>
+			</div>
+		</div>
+		</section>
+
+
+
+		<section class="section" id="section-2">
+		<div class="row body">
+			<div class="col-lg-3 col-md-3 col-sm-4 col-xs-6 left">
+				<div class="text-block">	
+					<p>Select a country to explore its sites</p>
+					<div class="scroll-block">	
+						<div class="country-list2"></div>
+					</div>
+				</div>
+			</div>
+
+        	<div class="col-lg-9 col-md-9 col-sm-8  col-xs-6 right">
+        					<div class="row btn-block">
+					<div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">			
+						<a href="#" id = "btn-32" class="navi">Sites Per Country</a>
+					</div>
+
+					<div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">		
+						<a href="#" id = "btn-42" class="navi">Sites By Land Area</a>
+						<p class="capt" id="capt-2">Each site is depicted as a circle whose <strong>size</strong> represents <strong>land area</strong> in hectares.</p>
+					</div>
+				</div>
+	        	<div class="row subcanvas">
+					<div class="col-lg-4 col-md-4 col-sm-4">			
+						<h2 class="n">Natural <span class="natural"> </span></h2>
+					</div>
+					<div class="col-lg-4 col-md-4 col-sm-4">		
+						<h2 class="m">Mixed <span class="mixed"> </span></h2>
+					</div>
+					<div class="col-lg-4 col-md-4 col-sm-4">		
+						<h2 class="c">Cultural <span class="cultural"> </span></h2>
+					</div>
+				</div>
+				<div class="row canvas" id="canvas-2"><h2></h2></div>
+			</div>
+		</div>
+		</section>
+	</section>
+</div>
+
+		<!-- Scripts -->
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.6/d3.min.js" charset="utf-8"></script>
+		<script src="lib/queue/queue.min.js"></script>
+		<script src="lib/jquery-1.11.1.min.js"></script>
+
+        <script type="text/javascript" src="http://yandex.st/jquery/mousewheel/3.0.6/jquery.mousewheel.min.js"></script>
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>		
+		<script src="lib/crossfilter/crossfilter.js"></script>
+		<script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+		<script src="http://d3js.org/topojson.v1.min.js"></script>
+		<script src="page.js"></script>
+		<script src="Map/script1.js"></script>
+		<script src="Category/script1.js"></script>
+
+	</body>
+</html>

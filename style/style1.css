@@ -1,0 +1,282 @@
+html,body,h1,h2,h3,h4,p,div,ul,li,svg{
+    margin:0;
+    padding:0;
+    font-size:100%;
+}
+
+/*------------Structure-------------*/
+html,body{
+    height: 100%;
+    position: relative;
+    background:#fff7f4;
+    color:#000;
+    font-family: 'Lato';
+}
+@font-face{
+    font-family:Lato-Black;
+    src:url('fonts/lato/Lato-Black.eot');
+    src:url('fonts/lato/Lato-Black.woff');
+}
+@font-face{
+    font-family:Lato-Reg;
+    src:url('fonts/lato/Lato-Regular.eot');
+    src:url('fonts/lato/Lato-Regular.woff');
+}
+
+@font-face{
+    font-family:Lato-Thin;
+    src:url('fonts/lato/Lato-Light.eot');
+    src:url('fonts/lato/Lato-Light.woff');
+}
+@font-face{
+    font-family:Lato-Itc;
+    src:url('fonts/lato/Lato-Italic.eot');
+    src:url('fonts/lato/Lato-Italic.woff');
+}
+
+
+.col-lg-1, .col-lg-10, .col-lg-11, .col-lg-12, .col-lg-2, .col-lg-3, .col-lg-4, .col-lg-5, .col-lg-6, .col-lg-7, .col-lg-8, .col-lg-9, .col-md-1, .col-md-10, .col-md-11, .col-md-12, .col-md-2, .col-md-3, .col-md-4, .col-md-5, .col-md-6, .col-md-7, .col-md-8, .col-md-9, .col-sm-1, .col-sm-10, .col-sm-11, .col-sm-12, .col-sm-2, .col-sm-3, .col-sm-4, .col-sm-5, .col-sm-6, .col-sm-7, .col-sm-8, .col-sm-9, .col-xs-1, .col-xs-10, .col-xs-11, .col-xs-12, .col-xs-2, .col-xs-3, .col-xs-4, .col-xs-5, .col-xs-6, .col-xs-7, .col-xs-8, .col-xs-9 {
+
+    padding:10px;
+    margin:0px;
+}
+/*------------font-------------*/
+h1, h2, p, li, a{
+
+}
+h1{ font-family:'Lato-Black';
+    font-size:27px;
+    line-height:22px;
+
+}
+strong{
+font-family:'Lato-Black';
+}
+
+.capt{
+    width:60%;
+}
+.title{ 
+    font-family:'Lato-Black';
+    text-transform: uppercase;
+    font-size:15px;
+    line-height:15px;
+}
+.navi {
+    color:rgb(140, 140, 140);    
+    font-family:'Lato-Reg';
+    text-transform: uppercase;
+    font-size:15px;
+    line-height:15px;
+}
+
+
+
+.sub{ 
+    font-family:'Lato-Thin';
+    font-size:15px;
+    line-height:15px;
+}
+h2{ 
+    font-family:'Lato-Reg';
+    font-size: 12pt;
+    line-height:15px;
+    }
+
+p{
+    font-family:'Lato-Reg';
+    font-size: 9.5pt;
+    line-height:17px;
+}
+
+li{
+    list-style: none;
+    font-family:'Lato-Thin';
+    font-size: 9.5pt;
+    line-height:20px;
+    color:rgb(140, 140, 140);
+}
+
+
+.c{
+color:#fdb913;
+}
+.m{
+color:#7fb378;
+}
+.n{
+color:#00addc;
+}
+span{
+    color:black;
+    padding-left:5px;
+}
+
+.container{
+    width:100%;
+    height: 100%;
+    margin-left:auto;
+}
+.scene{
+    width: 95%; height: 100%; margin: auto;
+}
+
+.head-block{
+    padding-top:10px;
+/*    margin-bottom:50px;*/
+}
+
+.block{
+    display:inline-block;
+}
+.text-block{
+    width:90%;
+    height:100%;
+    padding-top: 10px;
+    margin-bottom:10px;
+    background-color:#f9f4f2;
+}
+
+.scroll-block{
+    overflow-y:scroll;
+    width:90%;
+    height:90%;
+    padding-top: 10px;
+
+  }
+.section{
+    height:80%;
+}
+.body{
+    height:100%;
+}
+.right{
+    height:100%;
+}
+.left{
+    height:100%;
+}
+/*---------------------------------canvases */
+.canvas{
+    width:100%;
+    height: 80%;
+    background:#fff7f4;
+
+}
+
+.subcanvas{
+    width:100%;
+    height: 10%;
+
+}
+
+
+/*---------------------------------site gallery and images and info */
+.site_text h2, .site_text p{
+    width:90%;
+    margin:auto;
+}
+.site_text{
+    position:absolute;
+    background-color:#f9f4f2;
+    padding:10px;
+    bottom:40%;
+    width:40%;
+    left:20%;
+    text-align:left;
+    margin:auto;
+}
+.site_img{
+    display:block;
+    overflow: -moz-scrollbars-vertical;
+    overflow-x:scroll;
+    white-space:nowrap;
+    align:bottom;
+}
+.sites{
+    display: inline-block;
+    padding:10px;
+    width:200px;
+    height:120px;
+    clip-path: rect(10px, 20px, 30px, 40px);
+}
+
+/*------------------------------------------------time line-----------------------------------------*/
+
+.index-lines{
+    stroke:black;
+    stroke-width:1px;
+    opacity:.3;
+}
+.lines{
+    stroke:#dd3322;
+    stroke-width:1px;
+    opacity:.6;
+}
+/* ----------------------------------------------- SELECTIONS ------------------------------------*/
+.hide{
+    display:none;
+}      
+
+.myactive{
+    color:black;
+    fill:black;
+    opacity:1;
+    stroke:black;
+    stroke-width:.1px;
+    font-family:'Lato-Reg';
+}
+
+.navi.myactive{
+        color:black;
+    text-decoration: none;
+    text-decoration-color: none;
+}
+.sites.myactive{
+    display: inline-block;
+    padding:10px;
+    width:400px;
+    height:240px;
+    clip-path: rect(10px, 20px, 30px, 40px);
+}
+
+
+.lines.myactive{
+        stroke:#dd3322;
+    opacity:1;
+    stroke-width:2px;
+}
+
+
+.area_active{
+    opacity:1;
+    stroke:black;
+    stroke-width:1px;
+    font-family:'Lato-Reg';
+}
+.hover{
+  opacity:.3;
+}
+/* ----------------------------------------------- IMAGE STYLING ------------------------------------*/
+.node_img{
+    clip-path: rect(10px, 20px, 30px, 40px);
+}
+.gallery{
+    width:100%;
+    height:800px;
+    position:fixed;
+}
+
+.img_canvas{
+    width:100%;
+    height:100%;
+}
+a{
+    text-decoration: none;
+    text-decoration-color: none;
+}
+
+a:focus {
+    text-decoration: none;
+    text-decoration-color: none;
+}
