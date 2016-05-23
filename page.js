@@ -49,19 +49,16 @@ $(document).ready(function(){
 
 $(document).ready(function(){
     $("#btn-2").on('click', function(){
-        window.location.href='Palmyra/home.html';
+        window.location.href='Palmyra/Explore/home.html';
 
 })}); 
 
 
 
-// you can use just jquery for this
-// $(document).ready(function(){
-//     $('.overlay').show();
-//     $('#popup').show();
-
-
-// });
+$(document).ready(function(){
+        $(".section").hide(); 
+        $("#section-1").show();
+});
 
 // $("#popup").on('click', function() {
 //   $('#popup').hide();

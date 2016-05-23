@@ -30,6 +30,7 @@ countCountrySorted = d3.map();
 
 function start() {
 $("#section-2").hide();
+$("#section-3").hide();
 init_vis1();
 }
 window.onload = start;
